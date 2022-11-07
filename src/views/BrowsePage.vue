@@ -9,23 +9,33 @@ import {
   IonTitle,
   IonGrid,
   IonRow,
-  IonCol,
   IonIcon,
+  IonCol,
   IonFab,
+  modalController,
   IonFabButton,
+  IonModal,
+  IonText,
+  IonList,
+  IonItem,
   IonRefresher,
   IonToolbar,
   onIonViewDidEnter,
 } from "@ionic/vue";
 import { settingsOutline } from "ionicons/icons";
 import GameCard from "@/components/GameCard.vue";
+/*import GameModal from "@/components/GameModal.vue";*/
+import GameImage from "@/components/GameImage.vue";
 
 import { directus } from "@/services/directus.service";
 import { ref } from "vue";
 import { Games, GamesResponse } from "@/types/types";
+import GameModal from "@/components/GameModal.vue";
 
 const retroGames = ref<Games[]>();
 const isLoadingData = ref(true);
+const sendToModal = ref();
+const handleModal = ref(false);
 
 onIonViewDidEnter(async () => {
   await gameQuery();
@@ -59,11 +69,14 @@ const gameQuery = async () => {
   }
 };
 
-console.log(retroGames.value);
-
 const doRefresh = async (e: { target: { complete: () => any } }) => {
   await gameQuery();
   e.target.complete();
+};
+
+const sendGameToModal = (id: any) => {
+  handleModal.value = true;
+  sendToModal.value = retroGames.value?.find((game) => game.id === id);
 };
 </script>
 
@@ -80,21 +93,23 @@ const doRefresh = async (e: { target: { complete: () => any } }) => {
       </ion-toolbar>
     </ion-header>
 
-    <ion-content :fullscreen="true">
+    <ion-content @click="handleModal = false" :fullscreen="true">
+      <!--custom component-->
+      <game-modal :game="sendToModal" :handleModal="handleModal" />
+      <!--custom component-->
       <ion-refresher slot="fixed" @ionRefresh="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher>
       <ion-grid>
-        <ion-row v-for="game in retroGames" :key="game.id">
-          <!--custom component-->
-          <game-card
-            v-for="game in retroGames"
-            :key="game.id"
-            :game="game"
-            :image-id="game.image.id"
-          />
-          <!--custom component-->
-        </ion-row>
+        <!--custom component-->
+        <game-card
+          v-for="game in retroGames"
+          :key="game.id"
+          :game="game"
+          :image-id="game.image.id"
+          @click="sendGameToModal(game.id)"
+        />
+        <!--custom component-->
       </ion-grid>
     </ion-content>
     <ion-fab
@@ -102,12 +117,17 @@ const doRefresh = async (e: { target: { complete: () => any } }) => {
       slot="fixed"
       style="position: absolute; right: 0; bottom: 0"
     >
-      <ion-fab-button color="success" router-link="/new-game">+</ion-fab-button>
+      <ion-fab-button color="success">+</ion-fab-button>
     </ion-fab>
   </ion-page>
 </template>
 
 <style scoped lang="scss">
+ion-grid {
+  grid-template-columns: auto auto;
+  display: grid;
+}
+
 ion-content {
   font-family: "Fira Code", sans-serif;
 }

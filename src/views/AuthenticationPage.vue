@@ -206,7 +206,6 @@ const register = async (e: { preventDefault: () => void }) => {
 .header-text {
   text-align: center;
   font-weight: 700;
-  border-radius: 10px;
   font-size: 4rem;
   color: #fff;
   display: flex;
@@ -278,6 +277,7 @@ ion-button::part(native) {
   box-sizing: border-box;
   color: white;
   cursor: pointer;
+  border-radius: 0;
   display: inline-block;
   font-size: 2rem;
   margin: 1rem;

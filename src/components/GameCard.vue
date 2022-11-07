@@ -5,6 +5,7 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonText,
+  modalController,
   IonButtons,
   IonCol,
   IonButton,
@@ -26,32 +27,30 @@ defineProps<PropsFromHomeToCard>();
 <!--<ion-card @click="() => router.push(`/detail/${game.id}`)">-->
 
 <template>
-  <ion-col size="6">
-    <ion-card>
-      <!--custom component-->
-      <game-image :game-price="game.price" :image-id="game.image.id" />
-      <!--custom component-->
-      <ion-card-header>
-        <ion-card-title>{{ game.title }}</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-text>
-          <ul class="ul-properties-container-detail">
-            <li
-              class="properties"
-              v-for="property in game.properties"
-              :key="property"
-            >
-              {{ property }}
-            </li>
-          </ul>
-        </ion-text>
+  <ion-card>
+    <!--custom component-->
+    <game-image :game-price="game.price" :image-id="game.image.id" />
+    <!--custom component-->
+    <ion-card-header>
+      <ion-card-title>{{ game.title }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-text>
+        <ul class="ul-properties-container-detail">
+          <li
+            class="properties"
+            v-for="property in game.properties"
+            :key="property"
+          >
+            {{ property }}
+          </li>
+        </ul>
+      </ion-text>
 
-        <!--        {{ game.description }}-->
-      </ion-card-content>
-      <!--      <ion-button slot="end" fill="clear">Kjøp</ion-button>-->
-    </ion-card>
-  </ion-col>
+      <!--        {{ game.description }}-->
+    </ion-card-content>
+    <!--      <ion-button slot="end" fill="clear">Kjøp</ion-button>-->
+  </ion-card>
 </template>
 
 <style scoped lang="scss">
@@ -90,23 +89,24 @@ ion-card-title {
 }
 
 ion-card {
-  border: 2px #8f3bd3 solid;
+  border: 3px #8f3bd3 solid;
   animation: flicker 2s ease alternate infinite;
   box-shadow: 0.7rem 0.7rem black;
   color: #252525;
-  border-radius: 10px;
+  border-radius: 0;
+  height: min-content;
   font-weight: bold;
   font-size: 0.8rem;
 }
 @keyframes flicker {
   0% {
-    border: 2px #573bd3 solid;
+    border-color: #573bd3;
   }
   50% {
-    border: 2px #1f44d7 solid;
+    border-color: #1f44d7;
   }
   100% {
-    border: 2px #d33b3b solid;
+    border-color: #f605b2;
   }
 }
 ion-button {
