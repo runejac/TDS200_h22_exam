@@ -123,6 +123,33 @@ const sendGameToModal = (id: any) => {
 </template>
 
 <style scoped lang="scss">
+ion-title {
+  font-family: Saira, monospace;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  position: relative;
+  background: linear-gradient(
+    to bottom,
+    #ff00fb 0%,
+    #ffe2ff 50%,
+    #380a3f 51%,
+    #c100f7 100%
+  );
+  background-blend-mode: multiply;
+  background-size: 10px 100px;
+  line-height: 1;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke-width: 0.001em;
+  -webkit-text-stroke-color: rgba(181, 96, 194, 0.7);
+}
+
 ion-grid {
   grid-template-columns: auto auto;
   display: grid;
@@ -133,7 +160,7 @@ ion-content {
 }
 
 ion-content::part(background) {
-  --background: #efdfd5;
+  --background: #f8d034;
   font-family: "Fira Code", sans-serif;
 }
 
@@ -142,6 +169,25 @@ ion-toolbar {
   --opacity: 0.7;
   ion-title {
     font-size: 2rem;
+  }
+}
+
+ion-fab-button::part(native) {
+  background: #2aa146;
+  border-bottom: 6px inset rgba(0, 0, 0, 0.5);
+  border-left: 6px inset rgba(0, 0, 0, 0.5);
+  border-right: 6px inset rgba(255, 255, 255, 0.5);
+  border-top: 6px inset rgba(255, 255, 255, 0.5);
+  box-sizing: border-box;
+  color: white;
+  cursor: pointer;
+  border-radius: 10px;
+  display: inline-block;
+  font-size: 2rem;
+  text-transform: uppercase;
+
+  &:focus:active {
+    background: #15e343;
   }
 }
 

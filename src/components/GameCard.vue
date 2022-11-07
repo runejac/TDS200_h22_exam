@@ -80,7 +80,7 @@ ion-card-title {
     background-image: linear-gradient(
       to right,
       rgba(255, 225, 0, 0.1),
-      rgba(255, 225, 0, 0.7) 10%,
+      #f8d034 10%,
       rgba(255, 225, 0, 0.3)
     );
     -webkit-box-decoration-break: clone;
@@ -89,26 +89,17 @@ ion-card-title {
 }
 
 ion-card {
-  border: 3px #8f3bd3 solid;
-  animation: flicker 2s ease alternate infinite;
+  outline: 1px solid black;
   box-shadow: 0.7rem 0.7rem black;
   color: #252525;
   border-radius: 0;
   height: min-content;
   font-weight: bold;
   font-size: 0.8rem;
+  /*background on card and modal*/
+  background: #e8e6dc;
 }
-@keyframes flicker {
-  0% {
-    border-color: #573bd3;
-  }
-  50% {
-    border-color: #1f44d7;
-  }
-  100% {
-    border-color: #f605b2;
-  }
-}
+
 ion-button {
   font-family: "Fira Code", monospace;
 }

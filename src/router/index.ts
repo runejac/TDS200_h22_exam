@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "@ionic/vue-router";
 import { RouteRecordRaw } from "vue-router";
 import AuthenticationPage from "../views/AuthenticationPage.vue";
 import BrowsePage from "../views/BrowsePage.vue";
+import DetailPage from "../views/DetailPage.vue";
 import { authService } from "@/services/directus.service";
 import { toastController } from "@ionic/vue";
 
@@ -44,6 +45,12 @@ const routes: Array<RouteRecordRaw> = [
     name: "Browse",
     component: BrowsePage,
     alias: ["/hjem", "/home", "/start"],
+  },
+  {
+    path: "/detail/:id",
+    name: "Detail",
+    component: DetailPage,
+    alias: ["/details/:id", "/detailpage/:id"],
   },
 ];
 

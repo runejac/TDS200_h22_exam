@@ -285,7 +285,7 @@ ion-button::part(native) {
   text-transform: uppercase;
   width: auto;
 
-  &:focus {
+  &:focus:active {
     background: #821394;
   }
 }
@@ -293,7 +293,7 @@ ion-button::part(native) {
 .button-register::part(native) {
   background: #005800;
 
-  &:focus {
+  &:focus:active {
     background: #006800;
   }
 }
@@ -301,7 +301,7 @@ ion-button::part(native) {
 .button-guest::part(native) {
   background: #000000;
 
-  &:focus {
+  &:focus:active {
     background: #000000;
   }
 }
