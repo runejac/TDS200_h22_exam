@@ -22,15 +22,16 @@ import {
 
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { authService } from "@/services/directus.service";
+import { authService, directus } from "@/services/directus.service";
 import { constants } from "@/constants/constants";
 import { trashOutline } from "ionicons/icons";
 import { Camera, CameraResultType } from "@capacitor/camera";
 
 const router = useRouter();
-const loginFailed = ref(false);
-const registrationFailed = ref(false);
+const loginIsLoading = ref(false);
+const isPostingToRegister = ref(false);
 const newAvatar = ref();
+const avatarFileId = ref();
 const firstName = ref("");
 const email = ref("");
 const password = ref("");
@@ -40,17 +41,21 @@ const login = async (e: { preventDefault: () => void }) => {
 
   if (email.value.length > 0 && password.value.length > 0) {
     try {
-      await authService.login(email.value, password.value);
-      loginFailed.value = false;
-      await router.push("/browse");
-      email.value = "";
-      password.value = "";
+      loginIsLoading.value = true;
+      const response = await authService.login(email.value, password.value);
+
+      if (response?.access_token) {
+        await router.push("/browse");
+        email.value = "";
+        password.value = "";
+        loginIsLoading.value = false;
+      } else {
+        loginIsLoading.value = false;
+      }
     } catch (e) {
-      loginFailed.value = true;
+      loginIsLoading.value = false;
       console.error(e);
     }
-  } else {
-    loginFailed.value = true;
   }
 };
 
@@ -58,7 +63,6 @@ const loginAsGuestUser = async (e: { preventDefault: () => void }) => {
   e.preventDefault();
 
   try {
-    // TODO sette email og passord til guest bruker til consts
     await authService.login(
       constants.GUEST_USER_EMAIL,
       constants.GUEST_USER_PASSWORD
@@ -81,6 +85,7 @@ const loginAsGuestUser = async (e: { preventDefault: () => void }) => {
 const clearLoginInputsAfterRegisterIsClicked = () => {
   email.value = "";
   password.value = "";
+  //localStorage.removeItem("auth_expires_at");
 };
 
 const cancel = () => {
@@ -97,8 +102,16 @@ const chooseOrTakePicture = async () => {
   if (image.webPath) {
     newAvatar.value = image.webPath;
   }
+};
 
-  console.log(newAvatar.value);
+const postAvatarToDb = async () => {
+  const response = await fetch(newAvatar.value);
+  const fileBlob = await response.blob();
+  const formData = new FormData();
+  formData.append("file", fileBlob);
+  const file = await directus.files.createOne(formData);
+
+  avatarFileId.value = file?.id;
 };
 
 const removeImageChosen = () => {
@@ -108,15 +121,25 @@ const removeImageChosen = () => {
 
 const register = async (e: { preventDefault: () => void }) => {
   e.preventDefault();
+  await postAvatarToDb();
 
   try {
-    await authService.register(email.value, password.value, firstName.value);
-    //await login(e);
-    //await modalController.dismiss();
-    await router.push("/browse");
-    /*email.value = "";
-    password.value = "";
-    firstName.value = "";*/
+    const response = await authService.register(
+      firstName.value,
+      email.value,
+      password.value,
+      newAvatar.value ? avatarFileId.value : null
+    );
+
+    if (response !== null) {
+      await login(e);
+      await router.push("/browse");
+      await modalController.dismiss();
+      email.value = "";
+      password.value = "";
+      firstName.value = "";
+      newAvatar.value = "";
+    }
   } catch (e) {
     console.error(e);
   }
@@ -221,7 +244,9 @@ const register = async (e: { preventDefault: () => void }) => {
                 />
 
                 <div class="btns-login-container">
-                  <ion-button type="submit">Login</ion-button>
+                  <ion-button :disabled="loginIsLoading" type="submit"
+                    >Logg inn</ion-button
+                  >
                   <ion-button
                     class="button-register"
                     id="open-modal"

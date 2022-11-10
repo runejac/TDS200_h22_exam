@@ -1,6 +1,7 @@
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */
 
+/*Custom fonts*/
 @font-face {
   font-family: 'Saira';
   src: url('../../public/assets/fonts/SairaStencilOne-Regular.ttf') format('truetype');

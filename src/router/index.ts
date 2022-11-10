@@ -18,7 +18,7 @@ const authenticationRequiredRouteGuard = async () => {
   ) as unknown as number;
 
   // TODO fjerne denne med 900000000000000, kun for dev
-  if (userAccessTokenExpiresAt + 9000000000000 < new Date().getTime()) {
+  if (userAccessTokenExpiresAt + 9000000000 < new Date().getTime()) {
     const errorToast = await toastController.create({
       message: "Brukersesjon er utløpt - logg inn på nytt",
       duration: 5000,

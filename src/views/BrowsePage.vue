@@ -17,6 +17,7 @@ import {
   IonCard,
   IonToolbar,
   onIonViewDidEnter,
+  onIonViewWillLeave,
 } from "@ionic/vue";
 import GameCard from "@/components/GameCard.vue";
 import { authService, directus } from "@/services/directus.service";
@@ -33,9 +34,17 @@ const retroGames = ref<Games[]>();
 const isLoadingData = ref(true);
 const sendToModal = ref();
 const handleModal = ref(false);
+const currentUserAvatar = ref();
+const isLoading = ref(true);
+const avatarDummy = "assets/img/avatar-dummy.png";
 
 onIonViewDidEnter(async () => {
+  await getCurrentUserDetails();
   await gameQuery();
+});
+
+onIonViewWillLeave(async () => {
+  await getCurrentUserDetails();
 });
 
 const gameQuery = async () => {
@@ -66,7 +75,18 @@ const gameQuery = async () => {
   }
 };
 
+const getCurrentUserDetails = async () => {
+  const userAccessToken = localStorage.getItem("auth_token");
+  const currentUserResponse = await authService.currentUser();
+
+  if (currentUserResponse.avatar) {
+    currentUserAvatar.value = `${constants.DIRECTUS_INSTANCE}/assets/${currentUserResponse.avatar}?access_token=${userAccessToken}`;
+    isLoading.value = false;
+  }
+};
+
 const doRefresh = async (e: { target: { complete: () => any } }) => {
+  await getCurrentUserDetails();
   await gameQuery();
   e.target.complete();
 };
@@ -85,7 +105,12 @@ const sendGameToModal = (id: any) => {
         <ion-buttons slot="end">
           <ion-button @click="() => router.push('/user')">
             <!--custom component-->
-            <user-avatar />
+            <user-avatar
+              class="user-avatar"
+              :is-loading="isLoading"
+              :current-user-avatar="currentUserAvatar"
+              :avatar-dummy="avatarDummy"
+            />
             <!--custom component-->
           </ion-button>
         </ion-buttons>
@@ -141,16 +166,23 @@ const sendGameToModal = (id: any) => {
 </template>
 
 <style scoped lang="scss">
+.user-avatar {
+  max-width: 50px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+}
+
+ion-button {
+  height: 100%;
+}
+
 ion-title {
   font-family: Saira, monospace;
   text-align: center;
-  font-weight: 700;
-  font-size: 1rem;
+  font-weight: 500;
   color: #fff;
+  font-size: 1.8rem;
   display: flex;
-  justify-content: center;
-  align-content: center;
-  align-items: center;
   position: relative;
   background: linear-gradient(
     to bottom,
@@ -200,9 +232,6 @@ ion-content::part(background) {
 ion-toolbar {
   font-family: VT323, sans-serif;
   --opacity: 0.7;
-  ion-title {
-    font-size: 2rem;
-  }
 }
 
 ion-fab-button::part(native) {

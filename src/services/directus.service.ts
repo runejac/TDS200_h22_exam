@@ -5,30 +5,43 @@ import { toastController } from "@ionic/vue";
 export const directus = new Directus(constants.DIRECTUS_INSTANCE, {
   auth: {
     mode: "json",
+    // autoRefresh = false. For å stoppe refreshing av token,
+    // om ikke måtte jeg etter logg ut, klikke 2 ganger på registrer
+    // https://github.com/runejac/TDS200_h22_exam/issues/5
+    autoRefresh: true,
   },
 });
 
-// fra forelesning
 export const authService = {
   async login(email: string, password: string) {
-    return await directus.auth.login({ email, password });
+    try {
+      return await directus.auth.login({ email, password });
+    } catch (error) {
+      console.error(error);
+      const errorToast = await toastController.create({
+        message: "Feil brukernavn eller passord",
+        duration: 5000,
+        color: "warning",
+      });
+      await errorToast.present();
+    }
   },
 
   async register(
     firstName: string,
     email: string,
-    password: string
-    /*    avatar?: string | undefined*/
+    password: string,
+    avatar?: string
   ): Promise<boolean | null> {
-    // error handler for inputs on the back
-    console.log(firstName, email, password);
-    if (firstName.length > 0) {
+    if (firstName.length > 0 && email.includes("@") && password.length > 0) {
+      console.log(avatar);
+      // error handler for inputs on the back
       const createUserResult = await directus.users.createOne({
         first_name: firstName,
         email,
         password,
         role: constants.USER_ROLE,
-        /*        avatar,*/
+        avatar,
       });
 
       return !!createUserResult?.email;

@@ -1,24 +1,14 @@
 <script setup lang="ts">
 import { IonImg } from "@ionic/vue";
-import { authService } from "@/services/directus.service";
-import { constants } from "@/constants/constants";
-import { ref } from "vue";
+import { Ref } from "vue";
 
-const currentUserAvatar = ref();
-const isLoading = ref(true);
-const avatarDummy = "assets/img/avatar-dummy.png";
+interface PropsFromBrowsePageToAvatar {
+  isLoading: boolean;
+  avatarDummy: string;
+  currentUserAvatar: Ref<string>;
+}
 
-const getCurrentUserDetails = async () => {
-  const userAccessToken = localStorage.getItem("auth_token");
-  const currentUserResponse = await authService.currentUser();
-
-  if (currentUserResponse.avatar) {
-    currentUserAvatar.value = `${constants.DIRECTUS_INSTANCE}/assets/${currentUserResponse.avatar}?access_token=${userAccessToken}`;
-    isLoading.value = false;
-  }
-};
-
-getCurrentUserDetails();
+defineProps<PropsFromBrowsePageToAvatar>();
 </script>
 
 <template>
@@ -30,6 +20,7 @@ getCurrentUserDetails();
 
 <style scoped lang="scss">
 ion-img::part(image) {
-  border-radius: 100px;
+  border-radius: 100%;
+  border: 2px solid #252525;
 }
 </style>

@@ -23,17 +23,22 @@ import { Games, GamesResponse } from "@/types/types";
 import { ref } from "vue";
 import UserAvatar from "@/components/UserAvatar.vue";
 import GameImage from "@/components/GameImage.vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { constants } from "@/constants/constants";
 
 const router = useRouter();
 const isLoadingData = ref(true);
 const retroGames = ref<Games[]>();
-const userId = ref();
-const userFirstname = ref();
+const currentUserId = ref();
+const currentUserFirstname = ref();
+const currentUserAvatar = ref();
+const isLoading = ref(true);
+const avatarDummy = "assets/img/avatar-dummy.png";
+const userCreatedId = retroGames.value?.map((game) => game.user_created.id);
 
 onIonViewDidEnter(async () => {
   await getCurrentUserId();
+  await getCurrentUserDetails();
   await gameQuery();
 });
 
@@ -67,17 +72,10 @@ const gameQuery = async () => {
   }
 };
 
-let currentUser;
 const getCurrentUserId = async () => {
-  currentUser = await authService.currentUser();
-  userFirstname.value = currentUser.first_name;
-  userId.value = currentUser.id;
-  console.log(currentUser.id);
-};
-
-const doRefresh = async (e: { target: { complete: () => any } }) => {
-  await gameQuery();
-  e.target.complete();
+  const currentUserFromAuthService = await authService.currentUser();
+  currentUserFirstname.value = currentUserFromAuthService.first_name;
+  currentUserId.value = currentUserFromAuthService.id;
 };
 
 const logOut = async (messageToGuest?: string) => {
@@ -102,6 +100,22 @@ const logOutOfGuestAndRouteToStart = async () => {
   await logOut("Klikk på 'Registrer'");
   await router.replace("/");
 };
+
+const getCurrentUserDetails = async () => {
+  const userAccessToken = localStorage.getItem("auth_token");
+  const currentUserResponse = await authService.currentUser();
+
+  if (currentUserResponse.avatar) {
+    currentUserAvatar.value = `${constants.DIRECTUS_INSTANCE}/assets/${currentUserResponse.avatar}?access_token=${userAccessToken}`;
+    isLoading.value = false;
+  }
+};
+
+const doRefresh = async (e: { target: { complete: () => any } }) => {
+  await getCurrentUserDetails();
+  await gameQuery();
+  e.target.complete();
+};
 </script>
 
 <template>
@@ -111,17 +125,28 @@ const logOutOfGuestAndRouteToStart = async () => {
         <ion-buttons slot="start">
           <ion-back-button default-href="/browse"></ion-back-button>
         </ion-buttons>
-        <ion-title>Oversikt for {{ userFirstname }}</ion-title>
+        <ion-title>{{ currentUserFirstname }}</ion-title>
       </ion-toolbar>
     </ion-header>
 
     <ion-content>
       <div class="user-avatar-container">
-        <user-avatar class="user-avatar" />
+        <user-avatar
+          class="user-avatar"
+          :avatar-dummy="avatarDummy"
+          :is-loading="isLoading"
+          :current-user-avatar="currentUserAvatar"
+        />
       </div>
-      <div class="games-container" v-if="userId !== constants.GUEST_USER_ID">
+      <div
+        class="games-container"
+        v-if="
+          currentUserId !== constants.GUEST_USER_ID &&
+          currentUserId === userCreatedId
+        "
+      >
         <ion-text>
-          <h3>Dine artikler ute for salg</h3>
+          <h3>Dine artikler</h3>
         </ion-text>
         <ion-card v-for="game in retroGames" :key="game.id">
           <game-image
@@ -139,7 +164,10 @@ const logOutOfGuestAndRouteToStart = async () => {
           </ion-card-header>
         </ion-card>
       </div>
-      <div v-else class="not-logged-in-container">
+      <div
+        v-if="currentUserId === constants.GUEST_USER_ID"
+        class="not-logged-in-container"
+      >
         <ion-text>
           <h1>Kjære gjest</h1>
           <p>
@@ -154,7 +182,7 @@ const logOutOfGuestAndRouteToStart = async () => {
         </ion-buttons>
       </div>
       <ion-buttons
-        v-if="userId !== constants.GUEST_USER_ID"
+        v-if="currentUserId !== constants.GUEST_USER_ID"
         class="btn-logout-container"
       >
         <ion-button class="btn-logout" @click="logOut(null)"
