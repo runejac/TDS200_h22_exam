@@ -11,6 +11,7 @@ interface Games {
       user_created: { id: string; first_name: string };
     }
   ];
+  date_created: string;
   price: string;
   image: { id: string };
   user_created: { id: string; first_name: string };

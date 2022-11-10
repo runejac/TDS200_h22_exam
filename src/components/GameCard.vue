@@ -4,11 +4,8 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
+  IonSkeletonText,
   IonText,
-  modalController,
-  IonButtons,
-  IonCol,
-  IonButton,
 } from "@ionic/vue";
 import { useRouter } from "vue-router";
 import GameImage from "@/components/GameImage.vue";
@@ -46,10 +43,7 @@ defineProps<PropsFromHomeToCard>();
           </li>
         </ul>
       </ion-text>
-
-      <!--        {{ game.description }}-->
     </ion-card-content>
-    <!--      <ion-button slot="end" fill="clear">Kjøp</ion-button>-->
   </ion-card>
 </template>
 
@@ -96,11 +90,10 @@ ion-card {
   height: min-content;
   font-weight: bold;
   font-size: 0.8rem;
-  /*background on card and modal*/
   background: #e8e6dc;
 }
 
-ion-button {
+/*ion-button {
   font-family: "Fira Code", monospace;
-}
+}*/
 </style>

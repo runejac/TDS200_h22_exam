@@ -36,7 +36,7 @@ const handleRouterAndModal = () => {
 
 <template>
   <ion-modal class="custom" ref="modal" :is-open="handleModal">
-    <ion-content :force-overscroll="false">
+    <ion-content no-bounce :has-bouncing="false" :force-overscroll="false">
       <ion-toolbar color="translucent">
         <ion-title>{{ game.title }}</ion-title>
         <ion-buttons slot="end">

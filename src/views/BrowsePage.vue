@@ -1,36 +1,33 @@
 <script setup lang="ts">
 import {
-  IonContent,
-  IonHeader,
   IonButton,
   IonButtons,
+  IonContent,
+  IonFab,
+  IonFabButton,
+  IonGrid,
+  IonHeader,
+  IonSkeletonText,
+  IonCardHeader,
+  IonCardContent,
   IonPage,
+  IonRefresher,
   IonRefresherContent,
   IonTitle,
-  IonGrid,
-  IonRow,
-  IonIcon,
-  IonCol,
-  IonFab,
-  modalController,
-  IonFabButton,
-  IonModal,
-  IonText,
-  IonList,
-  IonItem,
-  IonRefresher,
+  IonCard,
   IonToolbar,
   onIonViewDidEnter,
 } from "@ionic/vue";
-import { settingsOutline } from "ionicons/icons";
 import GameCard from "@/components/GameCard.vue";
-/*import GameModal from "@/components/GameModal.vue";*/
-import GameImage from "@/components/GameImage.vue";
-
-import { directus } from "@/services/directus.service";
+import { authService, directus } from "@/services/directus.service";
 import { ref } from "vue";
 import { Games, GamesResponse } from "@/types/types";
 import GameModal from "@/components/GameModal.vue";
+import { useRouter } from "vue-router";
+import UserAvatar from "@/components/UserAvatar.vue";
+import { constants } from "@/constants/constants";
+
+const router = useRouter();
 
 const retroGames = ref<Games[]>();
 const isLoadingData = ref(true);
@@ -84,15 +81,16 @@ const sendGameToModal = (id: any) => {
   <ion-page>
     <ion-header :translucent="true">
       <ion-toolbar>
-        <ion-title slot="start">Retro Game Market 🕹️</ion-title>
+        <ion-title slot="start">Retro Game Market</ion-title>
         <ion-buttons slot="end">
-          <ion-button router-link="/settings">
-            <ion-icon slot="end" :icon="settingsOutline"></ion-icon>
+          <ion-button @click="() => router.push('/user')">
+            <!--custom component-->
+            <user-avatar />
+            <!--custom component-->
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-
     <ion-content @click="handleModal = false" :fullscreen="true">
       <!--custom component-->
       <game-modal :game="sendToModal" :handleModal="handleModal" />
@@ -100,7 +98,27 @@ const sendGameToModal = (id: any) => {
       <ion-refresher slot="fixed" @ionRefresh="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher>
-      <ion-grid>
+      <ion-grid v-if="isLoadingData">
+        <ion-card v-for="skeletonItem in 6" :key="skeletonItem">
+          <ion-skeleton-text :animated="true" style="height: 140px">
+          </ion-skeleton-text>
+          <ion-card-header>
+            <ion-skeleton-text
+              :animated="true"
+              style="width: 130px; height: 30px"
+            ></ion-skeleton-text>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-skeleton-text :animated="true" style="width: 70px">
+            </ion-skeleton-text>
+            <ion-skeleton-text :animated="true" style="width: 50px">
+            </ion-skeleton-text>
+            <ion-skeleton-text :animated="true" style="width: 100px">
+            </ion-skeleton-text>
+          </ion-card-content>
+        </ion-card>
+      </ion-grid>
+      <ion-grid v-else>
         <!--custom component-->
         <game-card
           v-for="game in retroGames"
@@ -150,6 +168,11 @@ ion-title {
   -webkit-text-stroke-color: rgba(181, 96, 194, 0.7);
 }
 
+ion-skeleton-text {
+  --background: rgba(188, 0, 255, 0.065);
+  --background-rgb: 128, 0, 255;
+}
+
 ion-grid {
   grid-template-columns: auto auto;
   display: grid;
@@ -159,8 +182,18 @@ ion-content {
   font-family: "Fira Code", sans-serif;
 }
 
+ion-card {
+  outline: 1px solid black;
+  box-shadow: 0.7rem 0.7rem black;
+  color: #252525;
+  border-radius: 0;
+  height: min-content;
+  font-weight: bold;
+  background: #e8e6dc;
+}
+
 ion-content::part(background) {
-  --background: #f8d034;
+  background: #f8d034;
   font-family: "Fira Code", sans-serif;
 }
 

@@ -17,7 +17,7 @@ const userAccessToken = localStorage.getItem("auth_token");
     <p>{{ gamePrice }} kr</p>
     <ion-img
       :src="`${constants.DIRECTUS_INSTANCE}/assets/${imageId}?access_token=${userAccessToken}`"
-      alt="img of game"
+      alt="image of game"
     />
   </div>
 </template>

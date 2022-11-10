@@ -11,23 +11,29 @@ import {
   IonModal,
   IonToolbar,
   IonHeader,
+  IonIcon,
   IonTitle,
   IonItemGroup,
   IonButtons,
   modalController,
   IonPage,
+  toastController,
 } from "@ionic/vue";
 
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { authService } from "@/services/directus.service";
+import { constants } from "@/constants/constants";
+import { trashOutline } from "ionicons/icons";
+import { Camera, CameraResultType } from "@capacitor/camera";
 
 const router = useRouter();
-const authenticationFailed = ref(false);
+const loginFailed = ref(false);
 const registrationFailed = ref(false);
+const newAvatar = ref();
+const firstName = ref("");
 const email = ref("");
 const password = ref("");
-const firstName = ref("");
 
 const login = async (e: { preventDefault: () => void }) => {
   e.preventDefault();
@@ -35,16 +41,16 @@ const login = async (e: { preventDefault: () => void }) => {
   if (email.value.length > 0 && password.value.length > 0) {
     try {
       await authService.login(email.value, password.value);
-      authenticationFailed.value = false;
+      loginFailed.value = false;
       await router.push("/browse");
       email.value = "";
       password.value = "";
     } catch (e) {
-      authenticationFailed.value = true;
+      loginFailed.value = true;
       console.error(e);
     }
   } else {
-    registrationFailed.value = true;
+    loginFailed.value = true;
   }
 };
 
@@ -53,10 +59,20 @@ const loginAsGuestUser = async (e: { preventDefault: () => void }) => {
 
   try {
     // TODO sette email og passord til guest bruker til consts
-    await authService.login("gjest@gjest.com", "123");
+    await authService.login(
+      constants.GUEST_USER_EMAIL,
+      constants.GUEST_USER_PASSWORD
+    );
     await router.push("/browse");
     email.value = "";
     password.value = "";
+    const succsessToast = await toastController.create({
+      message:
+        "På besøk som gjest, registrer deg om du skal kjøpe eller legge ut spill.",
+      duration: 5000,
+      color: "success",
+    });
+    await succsessToast.present();
   } catch (e) {
     console.error(e);
   }
@@ -71,14 +87,38 @@ const cancel = () => {
   modalController.dismiss();
 };
 
+const chooseOrTakePicture = async () => {
+  const image = await Camera.getPhoto({
+    quality: 100,
+    allowEditing: true,
+    resultType: CameraResultType.Uri,
+  });
+
+  if (image.webPath) {
+    newAvatar.value = image.webPath;
+  }
+
+  console.log(newAvatar.value);
+};
+
+const removeImageChosen = () => {
+  // todo fjern bilde i uploaden til db
+  newAvatar.value = "";
+};
+
 const register = async (e: { preventDefault: () => void }) => {
   e.preventDefault();
+
   try {
-    await authService.register(firstName.value, email.value, password.value);
-    await login(e);
-    await modalController.dismiss();
-  } catch (error) {
-    console.error(error);
+    await authService.register(email.value, password.value, firstName.value);
+    //await login(e);
+    //await modalController.dismiss();
+    await router.push("/browse");
+    /*email.value = "";
+    password.value = "";
+    firstName.value = "";*/
+  } catch (e) {
+    console.error(e);
   }
 };
 </script>
@@ -95,30 +135,8 @@ const register = async (e: { preventDefault: () => void }) => {
                 trigger="open-modal"
                 :initial-breakpoint="0.85"
               >
-                <ion-header>
-                  <ion-toolbar>
-                    <ion-buttons slot="start">
-                      <ion-button @click="cancel()">Avbryt</ion-button>
-                    </ion-buttons>
-                    <ion-title
-                      v-bind:class="
-                        registrationFailed ? 'not-properly-registered' : ''
-                      "
-                      class="ion-text-center"
-                      >{{
-                        registrationFailed
-                          ? "Woops! Feil i felt!"
-                          : "Registrer ny bruker"
-                      }}</ion-title
-                    >
-                    <ion-buttons slot="end">
-                      <ion-button :strong="true" @click="register"
-                        >Bekreft</ion-button
-                      >
-                    </ion-buttons>
-                  </ion-toolbar>
-                </ion-header>
-                <ion-content class="ion-padding">
+                <ion-title>Registrer ny bruker</ion-title>
+                <ion-content class="modal-content">
                   <ion-item-group>
                     <ion-item>
                       <ion-label position="stacked"></ion-label>
@@ -144,7 +162,43 @@ const register = async (e: { preventDefault: () => void }) => {
                         placeholder="Passord"
                       ></ion-input>
                     </ion-item>
+
+                    <section class="image-container">
+                      <ion-label position="stacked"
+                        >Velg avatar (valgfritt)</ion-label
+                      >
+                      <div
+                        v-if="newAvatar"
+                        class="has-been-added-image-container"
+                      >
+                        <div class="add-image">
+                          <img
+                            class="image-uploaded"
+                            :src="newAvatar"
+                            alt="image uploaded from gallery or storage"
+                            @click="chooseOrTakePicture"
+                          />
+                        </div>
+                        <ion-icon
+                          class="button-delete-image-chosen"
+                          @click="removeImageChosen"
+                          :icon="trashOutline"
+                        />
+                      </div>
+
+                      <div
+                        v-else
+                        class="will-be-added-image-container"
+                        @click="chooseOrTakePicture"
+                      >
+                        <div class="add-image"></div>
+                      </div>
+                    </section>
                   </ion-item-group>
+                  <div class="btns-register-container">
+                    <ion-button @click="cancel()">Avbryt</ion-button>
+                    <ion-button @click="register">Bekreft</ion-button>
+                  </div>
                 </ion-content>
               </ion-modal>
               <div class="header-text-container">
@@ -166,7 +220,7 @@ const register = async (e: { preventDefault: () => void }) => {
                   type="password"
                 />
 
-                <div class="buttons">
+                <div class="btns-login-container">
                   <ion-button type="submit">Login</ion-button>
                   <ion-button
                     class="button-register"
@@ -188,6 +242,11 @@ const register = async (e: { preventDefault: () => void }) => {
 </template>
 
 <style scoped lang="scss">
+ion-title {
+  text-align: center;
+  margin-block: 20px;
+}
+
 .header-text-container {
   font-family: "Saira", sans-serif;
   display: flex;
@@ -261,10 +320,26 @@ ion-input.custom {
   }
 }
 
-.buttons {
+.btns-register-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  ion-button:nth-child(2)::part(native) {
+    background: #005800;
+    &:focus:active {
+      background: #006800;
+    }
+  }
+}
+
+.btns-login-container {
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  ion-button:nth-child(1) {
+    margin-bottom: 40px;
+  }
 }
 
 ion-button::part(native) {
@@ -306,13 +381,52 @@ ion-button::part(native) {
   }
 }
 
-/*ion-item.custom {
-  --background: transparent;
-}*/
+.will-be-added-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 3px dashed #c2c2c2;
+  border-radius: 50px;
+  width: 80px;
+  height: 80px;
+}
 
-.not-authorized,
-.not-properly-registered {
-  color: red;
-  background-color: pink;
+.has-been-added-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 180px;
+}
+
+.button-delete-image-chosen {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-self: flex-end;
+  color: #ff8080;
+  font-size: 2rem;
+}
+
+.add-image {
+  font-size: 1.7rem;
+  font-family: "Fira Code Medium", sans-serif;
+}
+
+.image-container {
+  margin: 20px;
+  display: flex;
+  justify-content: flex-start;
+
+  ion-label {
+    font-size: 1.2rem;
+    color: gray;
+    font-family: "Fira Code Medium", sans-serif;
+  }
+}
+
+.image-uploaded {
+  max-height: 100px;
+  border-radius: 50px;
 }
 </style>
