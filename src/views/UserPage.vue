@@ -159,6 +159,7 @@ const doRefresh = async (e: { target: { complete: () => any } }) => {
               <ion-card-header>
                 <ion-card-title>{{ game.title }}</ion-card-title>
                 <ion-card-subtitle>
+                  Aktiv siden:
                   {{
                     new Date(game.date_created).toLocaleDateString()
                   }}</ion-card-subtitle
@@ -198,6 +199,11 @@ const doRefresh = async (e: { target: { complete: () => any } }) => {
 </template>
 
 <style scoped lang="scss">
+ion-card-title {
+  font-family: VT323, monospace;
+  font-size: 1.5rem;
+}
+
 ion-content::part(background) {
   background: #e8e6dc;
 }

@@ -151,13 +151,15 @@ const removeImageChosen = () => {
           </div>
         </section>
 
-        <div class="hashtag-container">
-          <ul class="ul-hashtag-container-new">
-            <li v-for="property in newGame.properties" :key="property">
-              {{ property }}
-            </li>
-          </ul>
-        </div>
+        <ul class="ul-properties-container-new">
+          <li
+            class="properties"
+            v-for="property in newGame.properties"
+            :key="property"
+          >
+            {{ property }}
+          </li>
+        </ul>
 
         <div class="input-container">
           <ion-item-group>
@@ -176,7 +178,7 @@ const removeImageChosen = () => {
                 inputmode="text"
                 v-model="newPropertyText"
                 type="text"
-                placeholder="Tags"
+                placeholder="Stikkord"
               ></ion-input>
               <ion-button
                 color="medium"
@@ -280,23 +282,28 @@ form {
   align-items: center;
 }
 
-.ul-hashtag-container-new {
+.ul-properties-container-new {
   position: relative;
   list-style: none;
   padding: 0;
   top: 30px;
   height: 12px;
-}
 
-.ul-hashtag-container-new > li {
-  display: inline-block;
-  background-color: #853eda;
-  color: #ffffff;
-  font-family: "Fira Code Medium", sans-serif;
-  font-size: 0.9rem;
-  border-radius: 20px;
-  padding-inline: 8px;
-  padding-block: 3px;
+  li {
+    display: inline-block;
+    color: #252525;
+    background-image: linear-gradient(
+      to right,
+      rgba(105, 96, 31, 0.1),
+      #f8d034 10%,
+      rgba(255, 225, 0, 0.3)
+    );
+    font-family: "Fira Code Medium", sans-serif;
+    font-size: 0.9rem;
+    border-radius: 20px;
+    padding-inline: 8px;
+    padding-block: 3px;
+  }
 }
 
 .btn-add-properties {

@@ -49,6 +49,8 @@ defineProps<PropsFromHomeToCard>();
 
 <style scoped lang="scss">
 ion-card-title {
+  font-family: VT323, monospace;
+  font-size: 1.5rem;
   text-decoration: underline 0.1em #000;
 }
 
