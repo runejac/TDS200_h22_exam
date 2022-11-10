@@ -33,9 +33,10 @@ const router = useRouter();
 const retroGames = ref<Games[]>();
 const isLoadingData = ref(true);
 const sendToModal = ref();
+const currentUserId = ref();
 const handleModal = ref(false);
 const currentUserAvatar = ref();
-const isLoading = ref(true);
+const isLoading = ref(false);
 const avatarDummy = "assets/img/avatar-dummy.png";
 
 onIonViewDidEnter(async () => {
@@ -78,10 +79,11 @@ const gameQuery = async () => {
 const getCurrentUserDetails = async () => {
   const userAccessToken = localStorage.getItem("auth_token");
   const currentUserResponse = await authService.currentUser();
+  currentUserId.value = currentUserResponse.id;
 
   if (currentUserResponse.avatar) {
     currentUserAvatar.value = `${constants.DIRECTUS_INSTANCE}/assets/${currentUserResponse.avatar}?access_token=${userAccessToken}`;
-    isLoading.value = false;
+    isLoading.value = true;
   }
 };
 
@@ -156,20 +158,19 @@ const sendGameToModal = (id: any) => {
       </ion-grid>
     </ion-content>
     <ion-fab
-      class="ion-margin"
+      v-if="currentUserId !== constants.GUEST_USER_ID"
+      class="btn-add-new ion-margin"
       slot="fixed"
-      style="position: absolute; right: 0; bottom: 0"
     >
-      <ion-fab-button color="success">+</ion-fab-button>
+      <ion-fab-button router-link="/add-new-game">+</ion-fab-button>
     </ion-fab>
   </ion-page>
 </template>
 
 <style scoped lang="scss">
 .user-avatar {
-  max-width: 50px;
+  max-width: 40px;
   border-radius: 50%;
-  border: 1px solid #fff;
 }
 
 ion-button {
@@ -234,6 +235,12 @@ ion-toolbar {
   --opacity: 0.7;
 }
 
+.btn-add-new {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
 ion-fab-button::part(native) {
   background: #2aa146;
   border-bottom: 6px inset rgba(0, 0, 0, 0.5);
@@ -241,7 +248,7 @@ ion-fab-button::part(native) {
   border-right: 6px inset rgba(255, 255, 255, 0.5);
   border-top: 6px inset rgba(255, 255, 255, 0.5);
   box-sizing: border-box;
-  color: white;
+  color: #e8e6dc;
   cursor: pointer;
   border-radius: 10px;
   display: inline-block;

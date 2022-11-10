@@ -32,12 +32,10 @@ const retroGames = ref<Games[]>();
 const currentUserId = ref();
 const currentUserFirstname = ref();
 const currentUserAvatar = ref();
-const isLoading = ref(true);
+const isLoading = ref(false);
 const avatarDummy = "assets/img/avatar-dummy.png";
-const userCreatedId = retroGames.value?.map((game) => game.user_created.id);
 
 onIonViewDidEnter(async () => {
-  await getCurrentUserId();
   await getCurrentUserDetails();
   await gameQuery();
 });
@@ -72,11 +70,11 @@ const gameQuery = async () => {
   }
 };
 
-const getCurrentUserId = async () => {
+/*const getCurrentUserId = async () => {
   const currentUserFromAuthService = await authService.currentUser();
   currentUserFirstname.value = currentUserFromAuthService.first_name;
   currentUserId.value = currentUserFromAuthService.id;
-};
+};*/
 
 const logOut = async (messageToGuest?: string) => {
   await authService.logout();
@@ -105,9 +103,12 @@ const getCurrentUserDetails = async () => {
   const userAccessToken = localStorage.getItem("auth_token");
   const currentUserResponse = await authService.currentUser();
 
+  currentUserFirstname.value = currentUserResponse.first_name;
+  currentUserId.value = currentUserResponse.id;
+
   if (currentUserResponse.avatar) {
     currentUserAvatar.value = `${constants.DIRECTUS_INSTANCE}/assets/${currentUserResponse.avatar}?access_token=${userAccessToken}`;
-    isLoading.value = false;
+    isLoading.value = true;
   }
 };
 
@@ -122,10 +123,12 @@ const doRefresh = async (e: { target: { complete: () => any } }) => {
   <ion-page>
     <ion-header :translucent="true">
       <ion-toolbar>
-        <ion-buttons slot="start">
+        <ion-title class="ion-text-center">
+          Oversikt, {{ currentUserFirstname }}
+        </ion-title>
+        <ion-buttons style="position: absolute" slot="start">
           <ion-back-button default-href="/browse"></ion-back-button>
         </ion-buttons>
-        <ion-title>{{ currentUserFirstname }}</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -140,29 +143,30 @@ const doRefresh = async (e: { target: { complete: () => any } }) => {
       </div>
       <div
         class="games-container"
-        v-if="
-          currentUserId !== constants.GUEST_USER_ID &&
-          currentUserId === userCreatedId
-        "
+        v-if="currentUserId !== constants.GUEST_USER_ID"
       >
         <ion-text>
           <h3>Dine artikler</h3>
         </ion-text>
-        <ion-card v-for="game in retroGames" :key="game.id">
-          <game-image
-            class="game-image"
-            :game-price="game.price"
-            :image-id="game.image.id"
-          />
-          <ion-card-header>
-            <ion-card-title>{{ game.title }}</ion-card-title>
-            <ion-card-subtitle>
-              {{
-                new Date(game.date_created).toLocaleDateString()
-              }}</ion-card-subtitle
-            >
-          </ion-card-header>
-        </ion-card>
+        <section>
+          <div v-for="game in retroGames" :key="game.id">
+            <ion-card v-if="currentUserId === game.user_created.id">
+              <game-image
+                class="game-image"
+                :game-price="game.price"
+                :image-id="game.image.id"
+              />
+              <ion-card-header>
+                <ion-card-title>{{ game.title }}</ion-card-title>
+                <ion-card-subtitle>
+                  {{
+                    new Date(game.date_created).toLocaleDateString()
+                  }}</ion-card-subtitle
+                >
+              </ion-card-header>
+            </ion-card>
+          </div>
+        </section>
       </div>
       <div
         v-if="currentUserId === constants.GUEST_USER_ID"
@@ -229,7 +233,7 @@ ion-content::part(background) {
 }
 
 .game-image {
-  //min-height: 100px;
+  max-height: 100px;
   max-width: 35%;
 }
 
@@ -260,9 +264,16 @@ ion-card {
   font-size: 1rem;
 }
 
+section {
+  margin-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 .btn-logout-container {
   display: flex;
-  position: absolute;
+  position: fixed;
   margin: 20px;
   bottom: 0;
   left: 0;

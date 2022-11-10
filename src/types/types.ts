@@ -30,6 +30,7 @@ interface NewGame {
   properties: string[];
   description: string;
   image: string;
+  price: string;
 }
 
 export { Games, GameResponseDetails, GamesResponse, NewGame };

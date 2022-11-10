@@ -8,12 +8,16 @@ interface PropsFromBrowsePageToAvatar {
   currentUserAvatar: Ref<string>;
 }
 
+/**jeg har disse props fra browsepage og userpage og ikke her
+ * i komponenten, for opplevde at de var avhengig av
+ * onIonViewDidEnter og det fungerte ikke her inne i en komponent*/
+
 defineProps<PropsFromBrowsePageToAvatar>();
 </script>
 
 <template>
   <ion-img
-    :src="!isLoading ? currentUserAvatar : avatarDummy"
+    :src="isLoading ? currentUserAvatar : avatarDummy"
     alt="image of dummy avatar loading"
   />
 </template>
@@ -21,6 +25,5 @@ defineProps<PropsFromBrowsePageToAvatar>();
 <style scoped lang="scss">
 ion-img::part(image) {
   border-radius: 100%;
-  border: 2px solid #252525;
 }
 </style>

@@ -85,7 +85,8 @@ const loginAsGuestUser = async (e: { preventDefault: () => void }) => {
 const clearLoginInputsAfterRegisterIsClicked = () => {
   email.value = "";
   password.value = "";
-  //localStorage.removeItem("auth_expires_at");
+  // ref line 8-10 @ directus.service.ts
+  localStorage.removeItem("auth_expires_at");
 };
 
 const cancel = () => {
@@ -105,13 +106,15 @@ const chooseOrTakePicture = async () => {
 };
 
 const postAvatarToDb = async () => {
-  const response = await fetch(newAvatar.value);
-  const fileBlob = await response.blob();
-  const formData = new FormData();
-  formData.append("file", fileBlob);
-  const file = await directus.files.createOne(formData);
+  if (newAvatar.value) {
+    const response = await fetch(newAvatar.value);
+    const fileBlob = await response.blob();
+    const formData = new FormData();
+    formData.append("file", fileBlob);
+    const file = await directus.files.createOne(formData);
 
-  avatarFileId.value = file?.id;
+    avatarFileId.value = file.id;
+  }
 };
 
 const removeImageChosen = () => {

@@ -3,6 +3,7 @@ import { RouteRecordRaw } from "vue-router";
 import AuthenticationPage from "../views/AuthenticationPage.vue";
 import BrowsePage from "../views/BrowsePage.vue";
 import DetailPage from "../views/DetailPage.vue";
+import AddNewGame from "../views/AddNewGame.vue";
 import UserPage from "../views/UserPage.vue";
 import { authService } from "@/services/directus.service";
 import { toastController } from "@ionic/vue";
@@ -18,7 +19,7 @@ const authenticationRequiredRouteGuard = async () => {
   ) as unknown as number;
 
   // TODO fjerne denne med 900000000000000, kun for dev
-  if (userAccessTokenExpiresAt + 9000000000 < new Date().getTime()) {
+  if (userAccessTokenExpiresAt < new Date().getTime()) {
     const errorToast = await toastController.create({
       message: "Brukersesjon er utløpt - logg inn på nytt",
       duration: 5000,
@@ -61,6 +62,13 @@ const routes: Array<RouteRecordRaw> = [
     name: "User",
     component: UserPage,
     alias: ["/bruker", "/userpage", "/settings", "/profile"],
+    beforeEnter: [authenticationRequiredRouteGuard],
+  },
+  {
+    path: "/add-new-game",
+    name: "Add New Game",
+    component: AddNewGame,
+    alias: ["/ny", "/newGame", "/new-game", "/add"],
     beforeEnter: [authenticationRequiredRouteGuard],
   },
 ];
