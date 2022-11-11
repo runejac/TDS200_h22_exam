@@ -16,6 +16,7 @@ import {
   IonTitle,
   IonCard,
   IonToolbar,
+  IonSearchbar,
   onIonViewDidEnter,
   onIonViewWillLeave,
 } from "@ionic/vue";
@@ -32,6 +33,7 @@ const router = useRouter();
 
 const retroGames = ref<Games[]>();
 const isLoadingData = ref(true);
+const userSearch = ref("");
 const sendToModal = ref();
 const currentUserId = ref();
 const handleModal = ref(false);
@@ -49,9 +51,10 @@ onIonViewWillLeave(async () => {
 });
 
 const gameQuery = async () => {
+  // TODO får se om jeg skal sette på limit her eller ikke etter hvert
   const response = await directus.graphql.items<GamesResponse>(`
     query {
-      games {
+      games(search: "${userSearch.value}") {
         id
         title
         description
@@ -74,6 +77,21 @@ const gameQuery = async () => {
       isLoadingData.value = false;
     }
   }
+};
+
+// todo trenger ikke denne trolig, da jeg har on-ion-clear: gameQuery()
+/*  retroGames.value?.filter((game) => {
+  return game.title.toLowerCase().includes(userSearch.value.toLowerCase());
+});*/
+
+let delayTimer: number | undefined;
+const userSearchHandler = async () => {
+  // resetter timer hver gang brukeren skriver noe i søkefelt, for å ikke trigge ønødvendig queries mot db
+  clearTimeout(delayTimer);
+  delayTimer = setTimeout(async () => {
+    // går det 3 sec og brukeren ikke har skrevet noe så blir søket trigget
+    await gameQuery();
+  }, 3000);
 };
 
 const getCurrentUserDetails = async () => {
@@ -119,6 +137,13 @@ const sendGameToModal = (id: any) => {
       </ion-toolbar>
     </ion-header>
     <ion-content @click="handleModal = false" :fullscreen="true">
+      <ion-searchbar
+        placeholder="Søk etter titler..."
+        :onchange="userSearchHandler"
+        v-model="userSearch"
+        animated
+        :on-ion-clear="gameQuery()"
+      ></ion-searchbar>
       <!--custom component-->
       <game-modal :game="sendToModal" :handleModal="handleModal" />
       <!--custom component-->

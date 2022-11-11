@@ -77,10 +77,14 @@ const handleRouterAndModal = () => {
 </template>
 
 <style scoped lang="scss">
+.scroll-content {
+  // todo sjekk om denne fungerer bra på telefon
+  overflow-y: auto;
+}
+
 ion-modal {
-  --height: 70%;
+  --height: 75%;
   --width: 80%;
-  /*  --box-shadow: 1rem 1rem black;*/
   --background: black;
 }
 
@@ -101,6 +105,7 @@ ion-list {
 .btn-details-container {
   display: flex;
   justify-content: center;
+  margin-block: 2rem;
   position: relative;
 }
 
@@ -119,7 +124,7 @@ ion-list {
 }
 
 ion-modal.custom {
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(1px);
 }
 

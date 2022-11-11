@@ -26,7 +26,7 @@ import {
     <ion-header :translucent="true">
       <ion-toolbar>
         <ion-title class="ion-text-center">TESTHALLO?</ion-title>
-        <ion-buttons slot="start">
+        <ion-buttons style="position: absolute" slot="start">
           <ion-back-button default-href="/browse">Tilbake</ion-back-button>
         </ion-buttons>
       </ion-toolbar>
