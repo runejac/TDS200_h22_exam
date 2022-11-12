@@ -4,6 +4,7 @@ import {
   IonButtons,
   IonContent,
   IonFab,
+  IonInput,
   IonFabButton,
   IonGrid,
   IonHeader,
@@ -46,9 +47,9 @@ onIonViewDidEnter(async () => {
   await gameQuery();
 });
 
-onIonViewWillLeave(async () => {
+/*onIonViewWillLeave(async () => {
   await getCurrentUserDetails();
-});
+});*/
 
 const gameQuery = async () => {
   // TODO får se om jeg skal sette på limit her eller ikke etter hvert
@@ -60,6 +61,7 @@ const gameQuery = async () => {
         description
         properties
         price
+        condition
         image {
           id
         }
@@ -79,19 +81,23 @@ const gameQuery = async () => {
   }
 };
 
-// todo trenger ikke denne trolig, da jeg har on-ion-clear: gameQuery()
-/*  retroGames.value?.filter((game) => {
-  return game.title.toLowerCase().includes(userSearch.value.toLowerCase());
-});*/
-
 let delayTimer: number | undefined;
 const userSearchHandler = async () => {
-  // resetter timer hver gang brukeren skriver noe i søkefelt, for å ikke trigge ønødvendig queries mot db
-  clearTimeout(delayTimer);
-  delayTimer = setTimeout(async () => {
-    // går det 3 sec og brukeren ikke har skrevet noe så blir søket trigget
-    await gameQuery();
-  }, 3000);
+  // dersom user logger ut forsøker den å query uten autentisering
+  // kjører derfor kun søke query om den er på rett page, altså /browse
+  // screenshot: https://github.com/runejac/TDS200_h22_exam/issues/9
+
+  const currentURL = document.URL;
+  const everythingAfterSlash = currentURL.split("/")[3];
+
+  if (everythingAfterSlash === "browse") {
+    // resetter timer hver gang brukeren skriver noe i søkefelt, for å ikke trigge ønødvendig queries mot db
+    clearTimeout(delayTimer);
+    delayTimer = setTimeout(async () => {
+      // går det 1 sec og brukeren ikke har skrevet noe så blir søket trigget
+      await gameQuery();
+    }, 1000);
+  }
 };
 
 const getCurrentUserDetails = async () => {
@@ -126,7 +132,7 @@ const sendGameToModal = (id: any) => {
           <ion-button @click="() => router.push('/user')">
             <!--custom component-->
             <user-avatar
-              class="user-avatar"
+              class="user-avatar-browse"
               :is-loading="isLoading"
               :current-user-avatar="currentUserAvatar"
               :avatar-dummy="avatarDummy"
@@ -138,11 +144,12 @@ const sendGameToModal = (id: any) => {
     </ion-header>
     <ion-content @click="handleModal = false" :fullscreen="true">
       <ion-searchbar
+        class="custom"
         placeholder="Søk etter titler..."
-        :onchange="userSearchHandler"
+        inputmode="search"
         v-model="userSearch"
+        :search="userSearchHandler()"
         animated
-        :on-ion-clear="gameQuery()"
       ></ion-searchbar>
       <!--custom component-->
       <game-modal :game="sendToModal" :handleModal="handleModal" />
@@ -193,9 +200,23 @@ const sendGameToModal = (id: any) => {
 </template>
 
 <style scoped lang="scss">
-.user-avatar {
+ion-searchbar.custom {
+  margin-top: 55px;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  font-weight: 700;
+  color: #252525;
+  --placeholder-color: #252525;
+}
+
+ion-grid {
+  margin-top: 50px;
+}
+
+.user-avatar-browse {
   max-width: 40px;
-  border-radius: 50%;
+  height: 50px;
 }
 
 ion-button {

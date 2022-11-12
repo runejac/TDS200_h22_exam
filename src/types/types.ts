@@ -3,6 +3,7 @@ interface Games {
   title: string;
   description: string;
   properties: string[];
+  condition: string;
   comments?: [
     {
       id: number;
@@ -31,6 +32,7 @@ interface NewGame {
   description: string;
   image: string;
   price: string;
+  condition: string;
 }
 
 export { Games, GameResponseDetails, GamesResponse, NewGame };

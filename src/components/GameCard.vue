@@ -43,15 +43,62 @@ defineProps<PropsFromHomeToCard>();
           </li>
         </ul>
       </ion-text>
+      <p
+        v-bind:class="
+          game.condition === 'Mint Condition'
+            ? 'mint'
+            : game.condition === 'Ny'
+            ? 'new'
+            : 'used'
+        "
+      >
+        {{ game.condition }}
+      </p>
     </ion-card-content>
   </ion-card>
 </template>
 
 <style scoped lang="scss">
+.mint {
+  font-family: Saira, monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  width: fit-content;
+  background-image: linear-gradient(45deg, #0030ef, #eb34f8);
+  background-size: 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.new {
+  color: #252525;
+  font-family: Saira, monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.used {
+  color: rgba(37, 37, 37, 0.58);
+  font-family: Saira, monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  width: fit-content;
+}
+
+ion-card-content > p {
+  color: rgba(37, 37, 37, 0.6);
+  font-family: Saira, monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  width: fit-content;
+}
+
 ion-card-title {
   font-family: VT323, monospace;
   font-size: 1.5rem;
-  text-decoration: underline 0.1em #000;
+  color: #252525;
+  text-decoration: underline 0.1em #252525;
 }
 
 .ul-properties-container-detail {

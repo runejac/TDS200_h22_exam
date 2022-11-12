@@ -12,6 +12,8 @@ import {
   IonLabel,
   IonPage,
   IonTextarea,
+  IonSelect,
+  IonSelectOption,
   IonTitle,
   IonToolbar,
   toastController,
@@ -34,6 +36,7 @@ const newGame = ref<NewGame>({
   description: "",
   image: "",
   price: "",
+  condition: "",
 });
 
 const chooseOrTakePicture = async () => {
@@ -78,6 +81,7 @@ const sendImageBlobToDatabase = async (e: { preventDefault: () => void }) => {
         description: newGame.value.description,
         price: newGame.value.price,
         image: file.id,
+        condition: newGame.value.condition,
       });
       isUploading.value = false;
       const successToast = await toastController.create({
@@ -93,6 +97,7 @@ const sendImageBlobToDatabase = async (e: { preventDefault: () => void }) => {
       newGame.value.description = "";
       newGame.value.price = "";
       newGame.value.properties = [];
+      newGame.value.condition = "";
       await router.replace("/browse");
     } else {
       const errorToast = await toastController.create({
@@ -206,6 +211,18 @@ const removeImageChosen = () => {
               v-model="newGame.description"
               required
             ></ion-textarea>
+            <ion-select
+              class="input"
+              v-model="newGame.condition"
+              placeholder="Tilstand"
+              required
+            >
+              <ion-select-option value="Ny">Ny</ion-select-option>
+              <ion-select-option value="Brukt">Brukt</ion-select-option>
+              <ion-select-option value="Mint Condition"
+                >Mint Condition</ion-select-option
+              >
+            </ion-select>
           </ion-item-group>
         </div>
         <div class="btn-add-container">
@@ -223,6 +240,10 @@ const removeImageChosen = () => {
 </template>
 
 <style scoped lang="scss">
+ion-select {
+  height: 40px;
+}
+
 ion-content::part(background) {
   background: #e8e6dc;
 }
@@ -247,18 +268,9 @@ ion-toolbar {
   color: #e8e6dc;
 }
 
-ion-input {
-  font-weight: 300;
-  color: #252525;
-
-  &:hover,
-  &:focus {
-    font-weight: 700;
-    outline: 1px #252525 solid;
-  }
-}
-
-ion-textarea {
+ion-input,
+ion-textarea,
+ion-select {
   font-weight: 300;
   color: #252525;
 

@@ -96,7 +96,6 @@ const goToGame = (gameId: string) => {
 
 const logOutOfGuestAndRouteToStart = async () => {
   await logOut("Klikk på 'Registrer'");
-  await router.replace("/");
 };
 
 const getCurrentUserDetails = async () => {
@@ -181,7 +180,10 @@ const doRefresh = async (e: { target: { complete: () => any } }) => {
           </p>
         </ion-text>
         <ion-buttons class="btn-start-container">
-          <ion-button class="btn-start" @click="logOutOfGuestAndRouteToStart"
+          <ion-button
+            class="btn-start"
+            @click="logOutOfGuestAndRouteToStart"
+            router-link="/"
             >Rykk tilbake til start</ion-button
           >
         </ion-buttons>

@@ -18,7 +18,7 @@ defineProps<PropsFromBrowsePageToAvatar>();
 <template>
   <ion-img
     :src="isLoading ? currentUserAvatar : avatarDummy"
-    alt="image of dummy avatar loading"
+    alt="image of avatar"
   />
 </template>
 

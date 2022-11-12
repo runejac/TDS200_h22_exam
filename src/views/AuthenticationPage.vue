@@ -85,8 +85,9 @@ const loginAsGuestUser = async (e: { preventDefault: () => void }) => {
 const clearLoginInputsAfterRegisterIsClicked = () => {
   email.value = "";
   password.value = "";
+  firstName.value = "";
   // ref line 8-10 @ directus.service.ts
-  localStorage.removeItem("auth_expires_at");
+  // localStorage.removeItem("auth_expires_at");
 };
 
 const cancel = () => {
@@ -113,12 +114,11 @@ const postAvatarToDb = async () => {
     formData.append("file", fileBlob);
     const file = await directus.files.createOne(formData);
 
-    avatarFileId.value = file.id;
+    avatarFileId.value = file?.id;
   }
 };
 
 const removeImageChosen = () => {
-  // todo fjern bilde i uploaden til db
   newAvatar.value = "";
 };
 
@@ -134,7 +134,7 @@ const register = async (e: { preventDefault: () => void }) => {
       newAvatar.value ? avatarFileId.value : null
     );
 
-    if (response !== null) {
+    if ((await response) !== null) {
       await login(e);
       await router.push("/browse");
       await modalController.dismiss();
@@ -222,7 +222,9 @@ const register = async (e: { preventDefault: () => void }) => {
                     </section>
                   </ion-item-group>
                   <div class="btns-register-container">
-                    <ion-button @click="cancel()">Avbryt</ion-button>
+                    <ion-button class="btn-cancel" @click="cancel"
+                      >Avbryt</ion-button
+                    >
                     <ion-button @click="register">Bekreft</ion-button>
                   </div>
                 </ion-content>
@@ -367,6 +369,13 @@ ion-input.custom {
 
   ion-button:nth-child(1) {
     margin-bottom: 40px;
+  }
+}
+
+ion-button.btn-cancel::part(native) {
+  background: #9b0c0c;
+  &:focus:active {
+    background: #ff5959;
   }
 }
 

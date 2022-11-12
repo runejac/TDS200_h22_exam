@@ -60,6 +60,17 @@ const handleRouterAndModal = () => {
             </li>
           </ul>
         </ion-text>
+        <p
+          v-bind:class="
+            game.condition === 'Mint Condition'
+              ? 'mint'
+              : game.condition === 'Ny'
+              ? 'new'
+              : 'used'
+          "
+        >
+          {{ game.condition }}
+        </p>
         <ion-text>
           <p class="description">{{ game.description }}</p>
         </ion-text>
@@ -77,6 +88,47 @@ const handleRouterAndModal = () => {
 </template>
 
 <style scoped lang="scss">
+ion-title {
+  font-family: VT323, monospace;
+  font-size: 1.5rem;
+  color: #252525;
+  text-decoration: underline 0.1em #252525;
+  font-weight: 300;
+}
+
+.mint {
+  padding: 0.1em;
+  margin-inline: 5px;
+  font-family: Saira, monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  width: fit-content;
+  background-image: linear-gradient(45deg, #0030ef, #eb34f8);
+  background-size: 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.new {
+  padding: 0.1em;
+  margin-inline: 5px;
+  color: #252525;
+  font-family: Saira, monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.used {
+  padding: 0.1em;
+  margin-inline: 5px;
+  color: rgba(37, 37, 37, 0.58);
+  font-family: Saira, monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  width: fit-content;
+}
+
 .scroll-content {
   // todo sjekk om denne fungerer bra på telefon
   overflow-y: auto;
@@ -144,7 +196,7 @@ ion-toolbar {
   flex-direction: row;
   position: relative;
   padding: 0.1em 0.4em;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 
   li {
@@ -153,8 +205,7 @@ ion-toolbar {
     align-items: center;
     font-size: 0.8rem;
     font-weight: 600;
-    justify-content: space-between;
-    padding: 0.1em 0.4em;
+    padding: 0.1rem 0.4rem;
     border-radius: 0;
     background-image: linear-gradient(
       to right,

@@ -16,8 +16,8 @@ export const authService = {
   async login(email: string, password: string) {
     try {
       return await directus.auth.login({ email, password });
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      console.error(e);
       const errorToast = await toastController.create({
         message: "Feil brukernavn eller passord",
         duration: 5000,
@@ -33,9 +33,12 @@ export const authService = {
     password: string,
     avatar?: string
   ): Promise<boolean | null> {
+    //localStorage.removeItem("auth_expires_at");
+    // error handler for inputs on the back
+
+    // FIXME:
+
     if (firstName.length > 0 && email.includes("@") && password.length > 0) {
-      console.log(avatar);
-      // error handler for inputs on the back
       const createUserResult = await directus.users.createOne({
         first_name: firstName,
         email,
