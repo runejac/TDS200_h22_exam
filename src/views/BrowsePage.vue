@@ -145,7 +145,7 @@ const sendGameToModal = (id: any) => {
     <ion-content @click="handleModal = false" :fullscreen="true">
       <ion-searchbar
         class="custom"
-        placeholder="Søk etter titler..."
+        placeholder="Ord, tittel, pris, tilstand"
         inputmode="search"
         v-model="userSearch"
         :search="userSearchHandler()"
