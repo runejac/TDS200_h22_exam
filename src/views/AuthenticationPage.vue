@@ -130,8 +130,8 @@ const register = async (e: { preventDefault: () => void }) => {
     const response = await authService.register(
       firstName.value,
       email.value,
-      password.value,
-      newAvatar.value ? avatarFileId.value : null
+      password.value
+      /*newAvatar.value ? avatarFileId.value : null*/
     );
 
     if ((await response) !== null) {
@@ -238,7 +238,7 @@ const register = async (e: { preventDefault: () => void }) => {
                   placeholder="E-post"
                   class="custom"
                   v-model="email"
-                  type="text"
+                  type="email"
                 />
                 <ion-input
                   required

@@ -30,8 +30,8 @@ export const authService = {
   async register(
     firstName: string,
     email: string,
-    password: string,
-    avatar?: string
+    password: string
+    /*avatar?: string*/
   ): Promise<boolean | null> {
     //localStorage.removeItem("auth_expires_at");
     // error handler for inputs on the back
@@ -44,7 +44,7 @@ export const authService = {
         email,
         password,
         role: constants.USER_ROLE,
-        avatar,
+        /*avatar,*/
       });
 
       return !!createUserResult?.email;
