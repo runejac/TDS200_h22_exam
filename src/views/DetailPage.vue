@@ -19,26 +19,368 @@ import {
   onIonViewDidEnter,
   toastController,
 } from "@ionic/vue";
+import { chatboxOutline, trashOutline } from "ionicons/icons";
+import { useRoute } from "vue-router";
+import { ref } from "vue";
+import { authService, directus } from "@/services/directus.service";
+import { Games, GameResponseDetails } from "@/types/types";
+import GameImage from "@/components/GameImage.vue";
+
+const route = useRoute();
+const { id } = route.params;
+const isModalOpen = ref(false);
+const currentUserId = ref();
+const newComment = ref("");
+const isLoadingData = ref(true);
+const isUploadingComment = ref(false);
+const games = ref<Games[]>();
+
+onIonViewDidEnter(async () => {
+  await gameDetailsQuery();
+  await getCurrentUserId();
+});
+
+const gameDetailsQuery = async () => {
+  const response = await directus.graphql.items<GameResponseDetails>(`
+    query {
+      games_by_id(id:${id}) {
+        id
+        title
+        description
+        properties
+        price
+        condition
+        image {
+          id
+        }
+        comments {
+          id
+          content
+          date_created
+          user_created {
+            id
+            first_name
+          }
+        }
+        user_created {
+          id
+          first_name
+        }
+      }
+    }
+  `);
+
+  if (response.status === 200 && response.data) {
+    games.value = response.data.games_by_id;
+
+    if (games.value !== null) {
+      isLoadingData.value = false;
+    }
+
+    /*    if (games.value.length > 0) {
+      isLoadingData.value = false;
+    }*/
+  }
+};
+
+const sendCommentToDatabase = async (e: { preventDefault: () => void }) => {
+  e.preventDefault();
+
+  try {
+    if (newComment.value.length > 0) {
+      isUploadingComment.value = true;
+      await directus.items("game_comments").createOne({
+        content: newComment.value,
+        game_comment_id: id,
+      });
+      isUploadingComment.value = false;
+      const successToast = await toastController.create({
+        message: "Lagt til kommentar",
+        duration: 2000,
+        color: "success",
+      });
+      await successToast.present();
+      isModalOpen.value = false;
+      // refresh comments section to see the latest comment added
+      await gameDetailsQuery();
+      newComment.value = "";
+    } else {
+      isUploadingComment.value = false;
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const getCurrentUserId = async () => {
+  const currentUserIdResponse = await authService.currentUser();
+  currentUserId.value = currentUserIdResponse.id;
+};
+
+const commentDelete = async (commentId: number) => {
+  const confirmedDeletion = confirm(
+    "Er du sikker på at du vil slette denne kommentaren?"
+  );
+
+  if (confirmedDeletion) {
+    try {
+      await directus.items("game_comments").deleteOne(commentId);
+      const successToast = await toastController.create({
+        message: "Slettet kommentar",
+        duration: 2000,
+        color: "warning",
+      });
+      await successToast.present();
+      await gameDetailsQuery();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+};
 </script>
 
 <template>
   <ion-page>
     <ion-header :translucent="true">
       <ion-toolbar>
-        <ion-title class="ion-text-center">TESTHALLO?</ion-title>
-        <ion-buttons style="position: absolute" slot="start">
-          <ion-back-button default-href="/browse">Tilbake</ion-back-button>
+        <ion-title class="ion-text-center">{{ games?.title }}</ion-title>
+        <ion-buttons slot="start">
+          <ion-back-button default-href="/browse"></ion-back-button>
+        </ion-buttons>
+
+        <ion-buttons slot="end">
+          <ion-button @click="isModalOpen = true">
+            <ion-icon :icon="chatboxOutline"></ion-icon>
+          </ion-button>
         </ion-buttons>
       </ion-toolbar>
-      <ion-buttons slot="end">
-        <ion-button>
-          <ion-icon></ion-icon>
-        </ion-button>
-      </ion-buttons>
     </ion-header>
 
-    <ion-content> HLLOWORLd?! </ion-content>
+    <!--loading spinner-->
+    <ion-content v-if="isLoadingData">
+      <ion-spinner class="spinner" name="crescent"></ion-spinner>
+    </ion-content>
+
+    <ion-content v-else :fullscreen="true">
+      <section>
+        <!--custom id-->
+        <game-image :image-id="games?.image.id" :game-price="games?.price" />
+        <!--custom id-->
+      </section>
+
+      <section class="ion-text-center ion-margin">
+        <ul class="ul-properties-container-detail">
+          <li v-for="property in games?.properties" :key="property">
+            {{ property }}
+          </li>
+        </ul>
+        <div>
+          <p
+            v-bind:class="
+              games?.condition === 'Mint Condition'
+                ? 'mint'
+                : games?.condition === 'Ny'
+                ? 'new'
+                : 'used'
+            "
+          >
+            {{ games?.condition }}
+          </p>
+        </div>
+        <ion-text class="description-container">
+          <p>
+            {{ games?.description }}
+          </p>
+        </ion-text>
+      </section>
+      <div class="hr-line" />
+      <section class="comments-container-section">
+        <ion-text class="ion-text-center">
+          <h3>Kommentarer</h3>
+        </ion-text>
+        <ion-text
+          class="comments-container"
+          v-for="comments in games?.comments"
+          :key="comments.id"
+        >
+          <div class="comments-text-container">
+            <h6 style="font-weight: bold">
+              {{ comments.user_created.first_name }}
+              <span class="comment-date-span">{{
+                new Date(comments.date_created).toLocaleString()
+              }}</span>
+            </h6>
+            <p>{{ comments.content }}</p>
+          </div>
+          <div
+            class="delete-icon-container"
+            v-if="comments.user_created.id === currentUserId"
+          >
+            <ion-icon
+              class="delete-comment-icon"
+              :icon="trashOutline"
+              @click="commentDelete(comments.id)"
+            ></ion-icon>
+          </div>
+        </ion-text>
+      </section>
+      <ion-modal
+        @did-dismiss="isModalOpen = false"
+        :is-open="isModalOpen"
+        :initial-breakpoint="0.25"
+        :breakpoints="[0.0, 0.25, 0.5, 0.75]"
+      >
+        <ion-content>
+          <ion-item lines="none">
+            <ion-label position="stacked"></ion-label>
+            <ion-textarea
+              autocapitalize="sentences"
+              placeholder="Skriv en kommentar..."
+              v-model="newComment"
+            ></ion-textarea>
+            <ion-button
+              @click="sendCommentToDatabase"
+              :disabled="isUploadingComment"
+              class="btn-add-comment"
+              color="success"
+              >Legg til kommentar</ion-button
+            >
+          </ion-item>
+        </ion-content>
+      </ion-modal>
+    </ion-content>
   </ion-page>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.mint {
+  font-family: Saira, monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  width: fit-content;
+  background-image: linear-gradient(45deg, #0030ef, #eb34f8);
+  background-size: 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.new {
+  color: #252525;
+  font-family: Saira, monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.used {
+  color: rgba(37, 37, 37, 0.58);
+  font-family: Saira, monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.description-container {
+  text-align: left;
+}
+
+ion-title {
+  font-size: 1.7rem;
+}
+
+ion-toolbar {
+  font-family: VT323, sans-serif;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  --background: rgba(230, 230, 250, 0.7);
+}
+
+ion-content::part(background) {
+  background: #e8e6dc;
+}
+
+.spinner {
+  color: #252525;
+  display: flex;
+  margin: auto;
+  width: 20%;
+  height: 90vh;
+}
+
+.comments-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.comments-text-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.delete-icon-container {
+  position: relative;
+  display: flex;
+  align-self: flex-end;
+}
+
+.delete-comment-icon {
+  color: #ff8080;
+  font-size: 1.5rem;
+}
+
+.comment-date-span {
+  color: #6b6b6b;
+  font-family: "Arial", sans-serif;
+  font-weight: lighter;
+}
+
+.btn-add-comment {
+  font-size: 1rem;
+}
+
+.comments-container-section {
+  margin: 20px;
+}
+
+.ul-properties-container-detail {
+  position: relative;
+  list-style: none;
+  padding: 0;
+}
+
+.ul-properties-container-detail {
+  display: flex;
+  list-style: none;
+  flex-direction: row;
+  justify-content: center;
+  position: relative;
+  padding: 0;
+  align-items: flex-start;
+  gap: 10px;
+
+  li {
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding-inline: 5px;
+    justify-content: space-between;
+    margin: 0 -0.4em;
+    padding: 0.1em 0.4em;
+    border-radius: 0.8em 0.3em;
+    background-image: linear-gradient(
+      to right,
+      rgba(255, 225, 0, 0.1),
+      #f8d034 10%,
+      rgba(255, 225, 0, 0.3)
+    );
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+}
+
+.hr-line {
+  border: 1px solid gray !important;
+  visibility: visible !important;
+}
+</style>

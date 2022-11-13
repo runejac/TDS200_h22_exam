@@ -149,6 +149,7 @@ const sendGameToModal = (id: any) => {
         inputmode="search"
         v-model="userSearch"
         :search="userSearchHandler()"
+        show-cancel-button="focus"
         animated
       ></ion-searchbar>
       <!--custom component-->
@@ -278,7 +279,9 @@ ion-content::part(background) {
 
 ion-toolbar {
   font-family: VT323, sans-serif;
-  --opacity: 0.7;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  --background: rgba(230, 230, 250, 0.7);
 }
 
 .btn-add-new {
