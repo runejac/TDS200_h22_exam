@@ -7,7 +7,6 @@ import {
   IonHeader,
   IonIcon,
   IonItem,
-  IonItemDivider,
   IonLabel,
   IonModal,
   IonPage,
@@ -19,12 +18,15 @@ import {
   onIonViewDidEnter,
   toastController,
 } from "@ionic/vue";
+import { MapboxMap, MapboxMarker } from "@studiometa/vue-mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 import { chatboxOutline, trashOutline } from "ionicons/icons";
 import { useRoute } from "vue-router";
 import { ref } from "vue";
 import { authService, directus } from "@/services/directus.service";
 import { Games, GameResponseDetails } from "@/types/types";
 import GameImage from "@/components/GameImage.vue";
+import { constants } from "@/constants/constants";
 
 const route = useRoute();
 const { id } = route.params;
@@ -50,6 +52,7 @@ const gameDetailsQuery = async () => {
         properties
         price
         condition
+        position
         image {
           id
         }
@@ -193,6 +196,25 @@ const commentDelete = async (commentId: number) => {
           </p>
         </ion-text>
       </section>
+      <section class="map-container">
+        <MapboxMap
+          style="height: 400px"
+          :access-token="constants.MAPBOX_TOKEN"
+          map-style="mapbox://styles/mapbox/dark-v10"
+          :center="[
+            games?.position.coordinates[0],
+            games?.position.coordinates[1],
+          ]"
+          :zoom="10"
+        >
+          <MapboxMarker
+            :lng-lat="[
+              games?.position.coordinates[0],
+              games?.position.coordinates[1],
+            ]"
+          />
+        </MapboxMap>
+      </section>
       <div class="hr-line" />
       <section class="comments-container-section">
         <ion-text class="ion-text-center">
@@ -237,6 +259,7 @@ const commentDelete = async (commentId: number) => {
               autocapitalize="sentences"
               placeholder="Skriv en kommentar..."
               v-model="newComment"
+              @keyup.enter="sendCommentToDatabase($event)"
             ></ion-textarea>
             <ion-button
               @click="sendCommentToDatabase"

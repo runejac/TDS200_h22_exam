@@ -1,24 +1,27 @@
 <script setup lang="ts">
 import {
-  IonPage,
-  IonHeader,
-  IonTitle,
-  IonButtons,
-  IonButton,
   IonBackButton,
+  IonButton,
+  IonButtons,
   IonCard,
-  IonText,
   IonCardHeader,
-  IonCardTitle,
   IonCardSubtitle,
-  IonItemDivider,
-  IonCardContent,
+  IonCardTitle,
   IonContent,
+  IonHeader,
+  IonIcon,
+  IonPage,
+  IonCardContent,
+  IonRefresher,
+  IonRefresherContent,
+  IonText,
+  IonTitle,
   IonToolbar,
   onIonViewDidEnter,
   toastController,
 } from "@ionic/vue";
 import { authService, directus } from "@/services/directus.service";
+import { trashOutline } from "ionicons/icons";
 import { Games, GamesResponse } from "@/types/types";
 import { ref } from "vue";
 import UserAvatar from "@/components/UserAvatar.vue";
@@ -70,11 +73,26 @@ const gameQuery = async () => {
   }
 };
 
-/*const getCurrentUserId = async () => {
-  const currentUserFromAuthService = await authService.currentUser();
-  currentUserFirstname.value = currentUserFromAuthService.first_name;
-  currentUserId.value = currentUserFromAuthService.id;
-};*/
+const gameDelete = async (gameId: number) => {
+  const confirmedDeletion = confirm(
+    "Er du sikker på at du vil fjerne dette spillet fra din samling?"
+  );
+
+  if (confirmedDeletion) {
+    try {
+      await directus.items("games").deleteOne(gameId);
+      const successToast = await toastController.create({
+        message: "Spill fjernet fra din samling.",
+        duration: 2000,
+        color: "warning",
+      });
+      await successToast.present();
+      await gameQuery();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+};
 
 const logOut = async (messageToGuest?: string) => {
   await authService.logout();
@@ -90,8 +108,8 @@ const logOut = async (messageToGuest?: string) => {
   await router.replace("/");
 };
 
-const goToGame = (gameId: string) => {
-  router.push(`/game/${gameId}`);
+const goToGameDetails = (gameId: number) => {
+  router.push(`/detail/${gameId}`);
 };
 
 const logOutOfGuestAndRouteToStart = async () => {
@@ -111,7 +129,7 @@ const getCurrentUserDetails = async () => {
   }
 };
 
-const doRefresh = async (e: { target: { complete: () => any } }) => {
+const doRefresh = async (e: { target: { complete: () => void } }) => {
   await getCurrentUserDetails();
   await gameQuery();
   e.target.complete();
@@ -148,15 +166,28 @@ const doRefresh = async (e: { target: { complete: () => any } }) => {
           <h3>Dine artikler</h3>
         </ion-text>
         <section>
+          <ion-refresher slot="fixed" @ionRefresh="doRefresh($event)">
+            <ion-refresher-content></ion-refresher-content>
+          </ion-refresher>
           <div v-for="game in retroGames" :key="game.id">
             <ion-card v-if="currentUserId === game.user_created.id">
               <game-image
+                @click="goToGameDetails(game.id)"
                 class="game-image"
                 :game-price="game.price"
                 :image-id="game.image.id"
               />
               <ion-card-header>
-                <ion-card-title>{{ game.title }}</ion-card-title>
+                <div class="title-delete-container">
+                  <ion-card-title @click="goToGameDetails(game.id)">{{
+                    game.title
+                  }}</ion-card-title>
+                  <ion-icon
+                    class="delete-comment-icon"
+                    :icon="trashOutline"
+                    @click="gameDelete(game.id)"
+                  ></ion-icon>
+                </div>
                 <ion-card-subtitle>
                   Aktiv siden:
                   {{
@@ -180,10 +211,7 @@ const doRefresh = async (e: { target: { complete: () => any } }) => {
           </p>
         </ion-text>
         <ion-buttons class="btn-start-container">
-          <ion-button
-            class="btn-start"
-            @click="logOutOfGuestAndRouteToStart"
-            router-link="/"
+          <ion-button class="btn-start" @click="logOutOfGuestAndRouteToStart"
             >Rykk tilbake til start</ion-button
           >
         </ion-buttons>
@@ -201,6 +229,18 @@ const doRefresh = async (e: { target: { complete: () => any } }) => {
 </template>
 
 <style scoped lang="scss">
+.title-delete-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.delete-comment-icon {
+  color: #ff8080;
+  font-size: 1.5rem;
+  position: relative;
+}
+
 ion-card-title {
   font-family: VT323, monospace;
   font-size: 1.5rem;

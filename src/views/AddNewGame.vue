@@ -17,6 +17,7 @@ import {
   IonTitle,
   IonToolbar,
   toastController,
+  onIonViewDidEnter,
 } from "@ionic/vue";
 import { Camera, CameraResultType } from "@capacitor/camera";
 import { ref } from "vue";
@@ -24,11 +25,15 @@ import { directus } from "@/services/directus.service";
 import { useRouter } from "vue-router";
 import { trashOutline } from "ionicons/icons";
 import { NewGame } from "@/types/types";
+import { Geolocation } from "@capacitor/geolocation";
 
 const router = useRouter();
-
 const newPropertyText = ref("");
 const isUploading = ref(false);
+
+onIonViewDidEnter(async () => {
+  await getCurrentPosition();
+});
 
 const newGame = ref<NewGame>({
   title: "",
@@ -37,7 +42,23 @@ const newGame = ref<NewGame>({
   image: "",
   price: "",
   condition: "",
+  position: {
+    type: "Point",
+    coordinates: [0, 0],
+  },
 });
+
+const getCurrentPosition = async () => {
+  // bruker posisjonen til bruker som er logget inn
+  const coordinates = await Geolocation.getCurrentPosition();
+  newGame.value.position.coordinates = [
+    coordinates.coords.longitude,
+    coordinates.coords.latitude,
+  ];
+
+  console.log("longitude", newGame.value.position.coordinates[0]);
+  console.log("latitude", newGame.value.position.coordinates[1]);
+};
 
 const chooseOrTakePicture = async () => {
   const image = await Camera.getPhoto({
@@ -58,7 +79,7 @@ const addProperties = () => {
   }
 };
 
-const sendImageBlobToDatabase = async (e: { preventDefault: () => void }) => {
+const insertGameToDb = async (e: { preventDefault: () => void }) => {
   e.preventDefault();
 
   if (!newGame.value.image) {
@@ -82,6 +103,7 @@ const sendImageBlobToDatabase = async (e: { preventDefault: () => void }) => {
         price: newGame.value.price,
         image: file.id,
         condition: newGame.value.condition,
+        position: newGame.value.position,
       });
       isUploading.value = false;
       const successToast = await toastController.create({
@@ -129,7 +151,7 @@ const removeImageChosen = () => {
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <form v-on:submit="sendImageBlobToDatabase">
+      <form v-on:submit="insertGameToDb">
         <section class="image-container">
           <div v-if="newGame.image" class="has-been-added-image-container">
             <div class="add-image">

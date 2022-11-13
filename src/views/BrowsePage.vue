@@ -100,7 +100,7 @@ const userSearchHandler = async () => {
   }
 };
 
-const getCurrentUserDetails = async () => {
+const getCurrentUserDetails = async (): Promise<void> => {
   const userAccessToken = localStorage.getItem("auth_token");
   const currentUserResponse = await authService.currentUser();
   currentUserId.value = currentUserResponse.id;
@@ -111,13 +111,13 @@ const getCurrentUserDetails = async () => {
   }
 };
 
-const doRefresh = async (e: { target: { complete: () => any } }) => {
+const doRefresh = async (e: { target: { complete: () => void } }) => {
   await getCurrentUserDetails();
   await gameQuery();
   e.target.complete();
 };
 
-const sendGameToModal = (id: any) => {
+const sendGameToModal = (id: number) => {
   handleModal.value = true;
   sendToModal.value = retroGames.value?.find((game) => game.id === id);
 };

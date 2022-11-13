@@ -14,6 +14,7 @@ interface Games {
   ];
   date_created: string;
   price: string;
+  position: { type: string; coordinates: number[] };
   image: { id: string };
   user_created: { id: string; first_name: string };
 }
@@ -33,6 +34,7 @@ interface NewGame {
   image: string;
   price: string;
   condition: string;
+  position: { type: string; coordinates: number[] };
 }
 
 export { Games, GameResponseDetails, GamesResponse, NewGame };
