@@ -130,8 +130,8 @@ const register = async (e: { preventDefault: () => void }) => {
     const response = await authService.register(
       firstName.value,
       email.value,
-      password.value
-      /*newAvatar.value ? avatarFileId.value : null*/
+      password.value,
+      newAvatar.value ? avatarFileId.value : null
     );
 
     if ((await response) !== null) {
