@@ -24,15 +24,27 @@ import { chatboxOutline, trashOutline } from "ionicons/icons";
 import { useRoute } from "vue-router";
 import { ref } from "vue";
 import { authService, directus } from "@/services/directus.service";
-import { Games, GameResponseDetails } from "@/types/types";
+import { GameResponseDetails, Games } from "@/types/types";
 import GameImage from "@/components/GameImage.vue";
 import { constants } from "@/constants/constants";
+
+interface PositionCoordinates {
+  longitude: number;
+  latitude: number;
+}
+
+/*interface PosCoords {
+  coords: PositionCoords;
+}*/
 
 const route = useRoute();
 const { id } = route.params;
 const isModalOpen = ref(false);
 const currentUserId = ref();
+const positionCoordinates = ref<PositionCoordinates>();
 const newComment = ref("");
+const addressFromCoordinates = ref("");
+const positionForAddress = ref();
 const isLoadingData = ref(true);
 const isUploadingComment = ref(false);
 const games = ref<Games[]>();
@@ -40,6 +52,8 @@ const games = ref<Games[]>();
 onIonViewDidEnter(async () => {
   await gameDetailsQuery();
   await getCurrentUserId();
+  await convertFromGameObjectToPositionCoordinates();
+  await fetchAddress();
 });
 
 const gameDetailsQuery = async () => {
@@ -140,6 +154,36 @@ const commentDelete = async (commentId: number) => {
     }
   }
 };
+const convertFromGameObjectToPositionCoordinates = async () => {
+  positionForAddress.value = games?.value;
+  const response = await positionForAddress.value;
+  const arrayOfGame = Object.values(response);
+  const position = arrayOfGame[6];
+  const positionArray = Array(position);
+  // klar over en fy-fy "any" her
+  const positionObject: any = await positionArray[0];
+  const longitude = await positionObject.coordinates[0];
+  const latitude = await positionObject.coordinates[1];
+
+  positionCoordinates.value = {
+    longitude,
+    latitude,
+  };
+};
+
+const fetchAddress = async () => {
+  const reversedGeocodingResponse = await fetch(
+    `https://api.mapbox.com/geocoding/v5/mapbox.places/${positionCoordinates.value?.longitude},${positionCoordinates.value?.latitude}.json?access_token=${constants.MAPBOX_TOKEN}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const data = await reversedGeocodingResponse.json();
+  addressFromCoordinates.value = data.features[0].place_name;
+};
 </script>
 
 <template>
@@ -197,10 +241,16 @@ const commentDelete = async (commentId: number) => {
         </ion-text>
       </section>
       <section class="map-container">
+        <div class="address-text">
+          <p>
+            <span>Adresse: </span>
+            {{ addressFromCoordinates }}
+          </p>
+        </div>
         <MapboxMap
           style="height: 400px"
           :access-token="constants.MAPBOX_TOKEN"
-          map-style="mapbox://styles/mapbox/dark-v10"
+          map-style="mapbox://styles/mapbox/streets-v11"
           :center="[
             games?.position.coordinates[0],
             games?.position.coordinates[1],
@@ -276,6 +326,19 @@ const commentDelete = async (commentId: number) => {
 </template>
 
 <style scoped lang="scss">
+.map-container {
+  outline: 1px solid #252525;
+  display: flex;
+  flex-direction: column;
+}
+
+.address-text {
+  text-align: center;
+  span {
+    font-weight: bold;
+  }
+}
+
 .mint {
   font-family: Saira, monospace;
   font-size: 1rem;
