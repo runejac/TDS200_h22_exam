@@ -50,7 +50,9 @@ const newGame = ref<NewGame>({
 
 const getCurrentPosition = async () => {
   // bruker posisjonen til bruker som er logget inn
-  const coordinates = await Geolocation.getCurrentPosition();
+  const coordinates = await Geolocation.getCurrentPosition({
+    enableHighAccuracy: true,
+  });
   newGame.value.position.coordinates = [
     coordinates.coords.longitude,
     coordinates.coords.latitude,

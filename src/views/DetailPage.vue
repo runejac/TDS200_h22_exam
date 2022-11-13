@@ -184,6 +184,11 @@ const fetchAddress = async () => {
   const data = await reversedGeocodingResponse.json();
   addressFromCoordinates.value = data.features[0].place_name;
 };
+
+const goToGoogleMapsLink = async () => {
+  const googleMapsLink = `https://maps.google.com/?ll=${positionCoordinates.value?.latitude},${positionCoordinates.value?.longitude}`;
+  window.open(googleMapsLink, "_blank");
+};
 </script>
 
 <template>
@@ -241,13 +246,14 @@ const fetchAddress = async () => {
         </ion-text>
       </section>
       <section class="map-container">
-        <div class="address-text">
+        <div @click="goToGoogleMapsLink" class="address-text">
           <p>
-            <span>Adresse: </span>
             {{ addressFromCoordinates }}
           </p>
         </div>
         <MapboxMap
+          contries="no"
+          language="no"
           style="height: 400px"
           :access-token="constants.MAPBOX_TOKEN"
           map-style="mapbox://styles/mapbox/streets-v11"
@@ -255,7 +261,7 @@ const fetchAddress = async () => {
             games?.position.coordinates[0],
             games?.position.coordinates[1],
           ]"
-          :zoom="10"
+          :zoom="5"
         >
           <MapboxMarker
             :lng-lat="[
@@ -327,7 +333,9 @@ const fetchAddress = async () => {
 
 <style scoped lang="scss">
 .map-container {
-  outline: 1px solid #252525;
+  border: 1px solid #252525;
+  border-radius: 10px 10px 0 0;
+  margin: 10px;
   display: flex;
   flex-direction: column;
 }
@@ -404,7 +412,6 @@ ion-content::part(background) {
 }
 
 .delete-icon-container {
-  position: relative;
   display: flex;
   align-self: flex-end;
 }
