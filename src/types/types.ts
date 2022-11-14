@@ -4,6 +4,7 @@ interface Games {
   description: string;
   properties: string[];
   condition: string;
+  platform: string;
   comments?: [
     {
       id: number;
@@ -34,6 +35,7 @@ interface NewGame {
   image: string;
   price: string;
   condition: string;
+  platform: string;
   position: { type: string; coordinates: number[] };
 }
 

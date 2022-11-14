@@ -46,6 +46,7 @@ const newGame = ref<NewGame>({
     type: "Point",
     coordinates: [0, 0],
   },
+  platform: "",
 });
 
 const getCurrentPosition = async () => {
@@ -106,6 +107,7 @@ const insertGameToDb = async (e: { preventDefault: () => void }) => {
         image: file.id,
         condition: newGame.value.condition,
         position: newGame.value.position,
+        platform: newGame.value.platform,
       });
       isUploading.value = false;
       const successToast = await toastController.create({
@@ -122,6 +124,7 @@ const insertGameToDb = async (e: { preventDefault: () => void }) => {
       newGame.value.price = "";
       newGame.value.properties = [];
       newGame.value.condition = "";
+      newGame.value.platform = "";
       await router.replace("/browse");
     } else {
       const errorToast = await toastController.create({
@@ -245,6 +248,33 @@ const removeImageChosen = () => {
               <ion-select-option value="Brukt">Brukt</ion-select-option>
               <ion-select-option value="Mint Condition"
                 >Mint Condition</ion-select-option
+              >
+            </ion-select>
+            <ion-select
+              class="input"
+              v-model="newGame.platform"
+              placeholder="Konsoll"
+              required
+            >
+              <ion-select-option value="NES">NES</ion-select-option>
+              <ion-select-option value="Super NES Classic"
+                >Super NES Classic</ion-select-option
+              >
+              <ion-select-option value="Sega Genesis"
+                >Sega Genesis</ion-select-option
+              >
+              <ion-select-option value="Capcom Home Arcade"
+                >Capcom Home Arcade</ion-select-option
+              >
+              <ion-select-option value="Atari 2600"
+                >Atari 2600</ion-select-option
+              >
+              <ion-select-option value="Game Boy">Game Boy</ion-select-option>
+              <ion-select-option value="Game Boy Color"
+                >Game Boy Color</ion-select-option
+              >
+              <ion-select-option value="Playstation Classic"
+                >Playstation Classic</ion-select-option
               >
             </ion-select>
           </ion-item-group>

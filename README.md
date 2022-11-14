@@ -24,22 +24,22 @@ Retro Game Market 🕹️🎮🎰
 - [x] Et brukersystem må være på plass, med andre ord må brukerne av appen ha mulighet til å registrere seg, logge inn og logge ut.
 - [x] Kun innloggede brukere skal kunne legge til nye annonser. Gjester (ikke-innloggede brukere) skal kunne se publiserte annonser.
 - [x] Presentere en oversikt over alle annonser som er tilgjengelig. Dette kan for eksempel være i liste- eller grid-format.
-- [ ] Hver annonse må det gå an å trykke seg inn på for å få mer informasjon (se pkt. 4-5 i tabellen fra oppgave 1)
+- [x] Hver annonse må det gå an å trykke seg inn på for å få mer informasjon (se pkt. 4-5 i tabellen fra oppgave 1)
 
 ### Eksempler på funksjonalitet som kan heve karakter:
 - [x] Innslag av eget design med retro(spill)-tema.
-- [ ] Gi brukeren mulighet til å søke i- og/eller filtrere annonser på markedsplassen.
+- [x] Gi brukeren mulighet til å søke i- og/eller filtrere annonser på markedsplassen.
 - [ ] Kommunikasjon mellom brukere, f.eks. meldingssystem mellom selger og mulig kjøper.
-- [ ] «Spørsmål og svar»-seksjon / kommentarfelt inne på enkelt-annonse.
+- [x] «Spørsmål og svar»-seksjon / kommentarfelt inne på enkelt-annonse.
 - [x] Kamera (Capacitor Camera) for å ta bilder av salgsobjektet.
 - [ ] Mer enn ett bilde per annonse hvor man enten kan sveipe gjennom bilder, eller se bildene i et «galleri» i annonsen.
-- [ ] Fillagring via Directus, for lagring av blant annet bilder.
-- [ ] GPS (Capacitor Geolocation) for å hente ut hvor selger befinner seg i landet.
-- [ ] Bruk av Google Maps, Mapbox eller annen kartleverandør for å vise selgers lokasjon.
+- [x] Fillagring via Directus, for lagring av blant annet bilder.
+- [x] GPS (Capacitor Geolocation) for å hente ut hvor selger befinner seg i landet.
+- [x] Bruk av Google Maps, Mapbox eller annen kartleverandør for å vise selgers lokasjon.
 - [x] Tilbakemeldinger/feedback ved bruker-interaksjon (feilmeldinger, loading-spinnere, m.m.).
 - [x] Egen profilside for innlogget bruker.
-- [x] Bruk av npm-moduler (npm install [pakkenavn] –-save) (rimraf, prettier, sass, sass-loader, ionicons).
-- [ ] Bruk av relevante eksterne API-er (REST/GraphQL).
+- [x] Bruk av npm-moduler (npm install [pakkenavn] –-save) (rimraf, prettier, sass, sass-loader, ionicons, studiometa/vue-mapbox-gl).
+- [x] Bruk av relevante eksterne API-er (REST/GraphQL).
 - [ ] Implementasjon av accessibility-prinsipper.
 
 
