@@ -49,6 +49,14 @@ const newGame = ref<NewGame>({
 
 const getCurrentPosition = async () => {
   // bruker posisjonen til bruker som er logget inn
+  const checkPermission = await Geolocation.checkPermissions();
+
+  console.log(checkPermission);
+
+  const requestPermission = await Geolocation.requestPermissions();
+
+  console.log(requestPermission.location);
+
   const coordinates = await Geolocation.getCurrentPosition({
     enableHighAccuracy: true,
   });

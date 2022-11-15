@@ -31,7 +31,6 @@ import { constants } from "@/constants/constants";
 const route = useRoute();
 const { id } = route.params;
 const isModalOpen = ref(false);
-const googleMapsLink = ref();
 const currentUserId = ref();
 const positionCoordinates = ref<PositionCoordinates>();
 const newComment = ref("");
@@ -180,10 +179,14 @@ const fetchAddress = async () => {
   addressFromCoordinates.value = data.features[0].place_name;
 };
 
-const goToGoogleMapsLink = () => {
-  googleMapsLink.value = `
-  https://www.google.com/maps/?q=${positionCoordinates.value?.latitude},${positionCoordinates.value?.longitude}
-  `;
+const copyToClipBoardAddress = async () => {
+  await navigator.clipboard.writeText(addressFromCoordinates.value);
+  const successToast = await toastController.create({
+    message: "Kopiert til utklippstavle",
+    duration: 2000,
+    color: "success",
+  });
+  await successToast.present();
 };
 </script>
 
@@ -243,10 +246,10 @@ const goToGoogleMapsLink = () => {
         </ion-text>
       </section>
       <section class="map-container">
-        <div @click="goToGoogleMapsLink" class="address-text">
-          <a href="{{googleMapsLink}}" target="_blank">
-            {{ addressFromCoordinates }}</a
-          >
+        <div @click="copyToClipBoardAddress" class="address-text">
+          <p>
+            {{ addressFromCoordinates }}
+          </p>
         </div>
         <MapboxMap
           contries="no"
@@ -342,7 +345,8 @@ ion-icon {
 
 .address-text {
   text-align: center;
-  padding-block: 15px;
+  color: #3366cc;
+  text-decoration: underline;
 }
 
 .condition-platform-container > * {
