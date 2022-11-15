@@ -380,7 +380,7 @@ form {
 
 ion-button::part(native) {
   /*FIXME: style 1:*/
-  /*  background: #2aa146;
+  background: #2aa146;
   border-bottom: 6px inset rgba(0, 0, 0, 0.5);
   border-left: 6px inset rgba(0, 0, 0, 0.5);
   border-right: 6px inset rgba(255, 255, 255, 0.5);
@@ -393,10 +393,10 @@ ion-button::part(native) {
 
   &:focus:active {
     background: #15e343;
-  }*/
+  }
 
   /*FIXME: style 2:*/
-  font-family: "Fira Code Medium", sans-serif;
+  /*  font-family: "Fira Code Medium", sans-serif;
   font-size: 1rem;
   font-weight: 700;
   color: #ffffff;
@@ -415,12 +415,8 @@ ion-button::part(native) {
   &:active {
     background-color: #2aa146;
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
-  }
+  }*/
 }
-
-/*ion-button.btn-add-properties::part(native) {
-  --background: #2aa146;
-}*/
 
 .input-container {
   margin-top: 4rem;

@@ -20,7 +20,11 @@ import {
 } from "@ionic/vue";
 import { MapboxMap, MapboxMarker } from "@studiometa/vue-mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { chatboxOutline, trashOutline } from "ionicons/icons";
+import {
+  chatbubblesOutline,
+  chatboxEllipsesOutline,
+  trashOutline,
+} from "ionicons/icons";
 import { useRoute } from "vue-router";
 import { ref } from "vue";
 import { authService, directus } from "@/services/directus.service";
@@ -32,10 +36,6 @@ interface PositionCoordinates {
   longitude: number;
   latitude: number;
 }
-
-/*interface PosCoords {
-  coords: PositionCoords;
-}*/
 
 const route = useRoute();
 const { id } = route.params;
@@ -203,7 +203,7 @@ const goToGoogleMapsLink = async () => {
 
         <ion-buttons slot="end">
           <ion-button @click="isModalOpen = true">
-            <ion-icon :icon="chatboxOutline"></ion-icon>
+            <ion-icon :icon="chatboxEllipsesOutline"></ion-icon>
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
@@ -315,7 +315,7 @@ const goToGoogleMapsLink = async () => {
             <ion-label position="stacked"></ion-label>
             <ion-textarea
               autocapitalize="sentences"
-              placeholder="Skriv en kommentar..."
+              placeholder="Hei, når kan jeg hente det?"
               v-model="newComment"
               @keyup.enter="sendCommentToDatabase($event)"
             ></ion-textarea>
@@ -324,7 +324,7 @@ const goToGoogleMapsLink = async () => {
               :disabled="isUploadingComment"
               class="btn-add-comment"
               color="success"
-              >Legg til kommentar</ion-button
+              >Skriv til selger</ion-button
             >
           </ion-item>
         </ion-content>
@@ -334,6 +334,9 @@ const goToGoogleMapsLink = async () => {
 </template>
 
 <style scoped lang="scss">
+ion-icon {
+  font-size: 1.7rem;
+}
 .map-container {
   border: 1px solid #252525;
   border-radius: 10px 10px 0 0;

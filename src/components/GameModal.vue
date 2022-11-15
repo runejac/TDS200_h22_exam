@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import {
-  IonModal,
-  IonContent,
-  IonToolbar,
-  IonTitle,
-  IonText,
-  IonButtons,
   IonButton,
-  IonList,
-  IonItem,
+  IonButtons,
+  IonContent,
+  IonIcon,
+  IonModal,
+  IonTitle,
+  IonToolbar,
   modalController,
 } from "@ionic/vue";
 import GameImage from "@/components/GameImage.vue";
 import { Games } from "@/types/types";
 import { useRouter } from "vue-router";
+import { chatboxOutline, addOutline } from "ionicons/icons";
 
 const router = useRouter();
 
@@ -39,8 +38,10 @@ const handleRouterAndModal = () => {
     <ion-content no-bounce :has-bouncing="false" :force-overscroll="false">
       <ion-toolbar color="translucent">
         <ion-title>{{ game.title }}</ion-title>
-        <ion-buttons slot="end">
-          <ion-button class="btn-close" @click="dismiss()">Lukk</ion-button>
+        <ion-buttons class="btn-close-container" slot="end">
+          <ion-button @click="dismiss()">
+            <ion-icon class="icon-close" :icon="addOutline"></ion-icon>
+          </ion-button>
         </ion-buttons>
       </ion-toolbar>
 
@@ -95,6 +96,17 @@ const handleRouterAndModal = () => {
 </template>
 
 <style scoped lang="scss">
+.btn-close-container {
+  margin: 0;
+}
+
+.icon-close {
+  transform: rotate(45deg);
+  color: #ff5959;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
 .game-image {
   margin-left: auto;
   margin-right: auto;
@@ -162,11 +174,6 @@ ion-content {
   animation: flicker 2s ease alternate infinite;
 }
 
-.btn-close::part(native) {
-  font-size: 1rem;
-  color: rgba(5, 5, 5, 0.78);
-}
-
 .btn-details-container {
   display: flex;
   position: fixed;
@@ -176,11 +183,28 @@ ion-content {
 }
 
 .btn-details::part(native) {
-  font-family: "Fira Code", monospace;
+  // FIXME style 1
+  /*font-family: "Fira Code", monospace;
   font-size: 1rem;
   font-weight: 700;
   color: #e8e6dc;
+  background: #2aa146;*/
+
+  // FIXME style 2
   background: #2aa146;
+  border-bottom: 6px inset rgba(0, 0, 0, 0.5);
+  border-left: 6px inset rgba(0, 0, 0, 0.5);
+  border-right: 6px inset rgba(255, 255, 255, 0.5);
+  border-top: 6px inset rgba(255, 255, 255, 0.5);
+  color: #e8e6dc;
+  cursor: pointer;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+
+  &:focus:active {
+    background: #15e343;
+  }
 }
 
 ion-modal.custom {
