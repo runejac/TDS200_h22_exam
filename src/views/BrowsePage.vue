@@ -62,6 +62,7 @@ const gameQuery = async () => {
         properties
         price
         condition
+        platform
         image {
           id
         }

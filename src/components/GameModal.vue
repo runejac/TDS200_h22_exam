@@ -44,50 +44,64 @@ const handleRouterAndModal = () => {
         </ion-buttons>
       </ion-toolbar>
 
-      <ion-list>
+      <section>
         <!--custom component-->
-        <game-image :game-price="game.price" :image-id="game.image.id" />
+        <game-image
+          class="game-image"
+          :game-price="game.price"
+          :image-id="game.image.id"
+        />
         <!--custom component-->
-
-        <ion-text>
-          <ul class="ul-properties-container-detail">
-            <li
-              class="properties"
-              v-for="property in game.properties"
-              :key="property"
-            >
-              {{ property }}
-            </li>
-          </ul>
-        </ion-text>
-        <p
-          v-bind:class="
-            game.condition === 'Mint Condition'
-              ? 'mint'
-              : game.condition === 'Ny'
-              ? 'new'
-              : 'used'
-          "
-        >
-          {{ game.condition }}
-        </p>
-        <ion-text>
-          <p class="description">{{ game.description }}</p>
-        </ion-text>
-        <ion-buttons class="btn-details-container" slot="end">
-          <ion-button
-            class="btn-details"
-            color="light"
-            @click="handleRouterAndModal"
-            >Kjøp / kontakt selger</ion-button
+      </section>
+      <section>
+        <ul class="ul-properties-container-detail">
+          <li
+            class="properties"
+            v-for="property in game.properties"
+            :key="property"
           >
-        </ion-buttons>
-      </ion-list>
+            {{ property }}
+          </li>
+        </ul>
+
+        <div class="condition-platform-container">
+          <p
+            v-bind:class="
+              game.condition === 'Mint Condition'
+                ? 'mint'
+                : game.condition === 'Ny'
+                ? 'new'
+                : 'used'
+            "
+          >
+            {{ game.condition }}
+          </p>
+          <p class="platform">{{ game.platform }}</p>
+        </div>
+        <div class="description-container">
+          <p class="description">{{ game.description }}</p>
+        </div>
+      </section>
+      <div class="btn-details-container">
+        <ion-button
+          class="btn-details"
+          color="light"
+          @click="handleRouterAndModal"
+          >Kjøp / detaljer</ion-button
+        >
+      </div>
     </ion-content>
   </ion-modal>
 </template>
 
 <style scoped lang="scss">
+.game-image {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 200px;
+  height: auto;
+}
+
 ion-title {
   font-family: VT323, monospace;
   font-size: 1.5rem;
@@ -96,12 +110,26 @@ ion-title {
   font-weight: 300;
 }
 
-.mint {
+.condition-platform-container > * {
   padding: 0.1em;
   margin-inline: 5px;
-  font-family: Saira, monospace;
   font-size: 1rem;
   font-weight: 700;
+  margin: 0;
+}
+
+.condition-platform-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.platform {
+  color: #737373;
+}
+
+.mint {
+  font-family: Saira, monospace;
   width: fit-content;
   background-image: linear-gradient(45deg, #0030ef, #eb34f8);
   background-size: 100%;
@@ -110,28 +138,17 @@ ion-title {
 }
 
 .new {
-  padding: 0.1em;
-  margin-inline: 5px;
   color: #252525;
   font-family: Saira, monospace;
-  font-size: 1rem;
   font-weight: 700;
   width: fit-content;
 }
 
 .used {
-  padding: 0.1em;
-  margin-inline: 5px;
   color: rgba(37, 37, 37, 0.58);
   font-family: Saira, monospace;
-  font-size: 1rem;
   font-weight: 700;
   width: fit-content;
-}
-
-.scroll-content {
-  // todo sjekk om denne fungerer bra på telefon
-  overflow-y: auto;
 }
 
 ion-modal {
@@ -145,10 +162,6 @@ ion-content {
   animation: flicker 2s ease alternate infinite;
 }
 
-ion-list {
-  height: fit-content;
-}
-
 .btn-close::part(native) {
   font-size: 1rem;
   color: rgba(5, 5, 5, 0.78);
@@ -156,23 +169,18 @@ ion-list {
 
 .btn-details-container {
   display: flex;
-  justify-content: center;
-  margin-block: 2rem;
-  position: relative;
-}
-
-.btn-details {
-  display: flex;
-  position: relative;
-  margin: 0;
-  border-bottom: 2px #2aa146 solid;
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, 0);
+  bottom: 40px;
 }
 
 .btn-details::part(native) {
-  font-family: VT323, monospace;
-  font-size: 1.5rem;
-  font-weight: 300;
-  color: #2aa146;
+  font-family: "Fira Code", monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e8e6dc;
+  background: #2aa146;
 }
 
 ion-modal.custom {
@@ -185,9 +193,17 @@ ion-toolbar {
   color: black;
 }
 
+.description-container {
+  padding: 0.2em 0.8em 0 0.8em;
+}
+
 .description {
-  padding: 0.1em 0.5em;
+  margin: 1em 0 0 0;
   font-size: 0.9rem;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
 }
 
 .ul-properties-container-detail {

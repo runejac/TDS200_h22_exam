@@ -67,6 +67,7 @@ const gameDetailsQuery = async () => {
         price
         condition
         position
+        platform
         image {
           id
         }
@@ -226,7 +227,7 @@ const goToGoogleMapsLink = async () => {
             {{ property }}
           </li>
         </ul>
-        <div>
+        <div class="condition-platform-container">
           <p
             v-bind:class="
               games?.condition === 'Mint Condition'
@@ -238,6 +239,7 @@ const goToGoogleMapsLink = async () => {
           >
             {{ games?.condition }}
           </p>
+          <p class="platform">{{ games?.platform }}</p>
         </div>
         <ion-text class="description-container">
           <p>
@@ -347,10 +349,21 @@ const goToGoogleMapsLink = async () => {
   }
 }
 
-.mint {
-  font-family: Saira, monospace;
+.condition-platform-container > * {
+  padding: 0.1em;
+  margin-inline: 5px;
   font-size: 1rem;
   font-weight: 700;
+  width: fit-content;
+  margin: 0;
+}
+
+.platform {
+  color: #737373;
+}
+
+.mint {
+  font-family: Saira, monospace;
   width: fit-content;
   background-image: linear-gradient(45deg, #0030ef, #eb34f8);
   background-size: 100%;
@@ -361,17 +374,11 @@ const goToGoogleMapsLink = async () => {
 .new {
   color: #252525;
   font-family: Saira, monospace;
-  font-size: 1rem;
-  font-weight: 700;
-  width: fit-content;
 }
 
 .used {
   color: rgba(37, 37, 37, 0.58);
   font-family: Saira, monospace;
-  font-size: 1rem;
-  font-weight: 700;
-  width: fit-content;
 }
 
 .description-container {

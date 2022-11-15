@@ -4,14 +4,10 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
-  IonSkeletonText,
   IonText,
 } from "@ionic/vue";
-import { useRouter } from "vue-router";
 import GameImage from "@/components/GameImage.vue";
 import { Games } from "@/types/types";
-
-const router = useRouter();
 
 interface PropsFromHomeToCard {
   game: Games;
@@ -29,6 +25,7 @@ defineProps<PropsFromHomeToCard>();
     <game-image :game-price="game.price" :image-id="game.image.id" />
     <!--custom component-->
     <ion-card-header>
+      <p>{{ game.platform }}</p>
       <ion-card-title>{{ game.title }}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -59,6 +56,12 @@ defineProps<PropsFromHomeToCard>();
 </template>
 
 <style scoped lang="scss">
+ion-card-header {
+  p {
+    margin: 0;
+  }
+}
+
 .mint {
   font-family: Saira, monospace;
   font-size: 1rem;
