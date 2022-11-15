@@ -319,9 +319,13 @@ ion-page {
   -webkit-backdrop-filter: blur(5px);
 }
 
-ion-content::part(background) {
+ion-content.background {
   --background: url("../../public/assets/img/retro-background.jpg") no-repeat
     center top / cover;
+}
+
+ion-content::part(background) {
+  // for at bakgrunnsbilde ikke skal flytte på seg når keyboard trigges
   background-size: 130vw;
 }
 
