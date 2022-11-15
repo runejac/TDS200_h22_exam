@@ -12,7 +12,7 @@ import {
 import GameImage from "@/components/GameImage.vue";
 import { Games } from "@/types/types";
 import { useRouter } from "vue-router";
-import { chatboxOutline, addOutline } from "ionicons/icons";
+import { addOutline } from "ionicons/icons";
 
 const router = useRouter();
 
@@ -183,14 +183,14 @@ ion-content {
 }
 
 .btn-details::part(native) {
-  // FIXME style 1
+  // style 1
   /*font-family: "Fira Code", monospace;
   font-size: 1rem;
   font-weight: 700;
   color: #e8e6dc;
   background: #2aa146;*/
 
-  // FIXME style 2
+  // style 2
   background: #2aa146;
   border-bottom: 6px inset rgba(0, 0, 0, 0.5);
   border-left: 6px inset rgba(0, 0, 0, 0.5);

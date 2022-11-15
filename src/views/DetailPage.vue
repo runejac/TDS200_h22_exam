@@ -20,22 +20,13 @@ import {
 } from "@ionic/vue";
 import { MapboxMap, MapboxMarker } from "@studiometa/vue-mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import {
-  chatbubblesOutline,
-  chatboxEllipsesOutline,
-  trashOutline,
-} from "ionicons/icons";
+import { chatboxEllipsesOutline, trashOutline } from "ionicons/icons";
 import { useRoute } from "vue-router";
 import { ref } from "vue";
 import { authService, directus } from "@/services/directus.service";
-import { GameResponseDetails, Games } from "@/types/types";
+import { GameResponseDetails, Games, PositionCoordinates } from "@/types/types";
 import GameImage from "@/components/GameImage.vue";
 import { constants } from "@/constants/constants";
-
-interface PositionCoordinates {
-  longitude: number;
-  latitude: number;
-}
 
 const route = useRoute();
 const { id } = route.params;
@@ -91,13 +82,7 @@ const gameDetailsQuery = async () => {
   if (response.status === 200 && response.data) {
     games.value = response.data.games_by_id;
 
-    if (games.value !== null) {
-      isLoadingData.value = false;
-    }
-
-    /*    if (games.value.length > 0) {
-      isLoadingData.value = false;
-    }*/
+    isLoadingData.value = false;
   }
 };
 
@@ -119,7 +104,7 @@ const sendCommentToDatabase = async (e: { preventDefault: () => void }) => {
       });
       await successToast.present();
       isModalOpen.value = false;
-      // refresh comments section to see the latest comment added
+      // refresh kommentarer etter det er lagt til
       await gameDetailsQuery();
       newComment.value = "";
     } else {
@@ -156,16 +141,23 @@ const commentDelete = async (commentId: number) => {
   }
 };
 const convertFromGameObjectToPositionCoordinates = async () => {
-  positionForAddress.value = games?.value;
-  const response = await positionForAddress.value;
-  const arrayOfGame = Object.values(response);
-  const position = arrayOfGame[6];
-  const positionArray = Array(position);
-  // klar over en fy-fy "any" her
-  const positionObject: any = await positionArray[0];
-  const longitude = await positionObject.coordinates[0];
-  const latitude = await positionObject.coordinates[1];
+  // som brukes til API geocoding i functionen fetchAddress
 
+  positionForAddress.value = games?.value;
+  const gameResponse: object = await positionForAddress.value;
+  // henter ut verdiene i objektet
+  const arrayOfGame = Object.values(gameResponse);
+  // henter ut index 6 som er position
+  const positionIndex = arrayOfGame[6];
+  // henter ut index 6 som er et objekt med lat og long
+  const positionArray = Array(positionIndex);
+  // henter ut index 0 som er et objekt med lat og long
+  const positionObject: { coordinates: number[] } = await positionArray[0];
+  // plasserer lat og long numbers i egne variabler
+  const longitude = positionObject.coordinates[0];
+  const latitude = positionObject.coordinates[1];
+
+  // har disse i en ref som brukes for å hente adressen i mapbox APIet som reverse geoocoder det om til lesbar adresse
   positionCoordinates.value = {
     longitude,
     latitude,
@@ -183,11 +175,14 @@ const fetchAddress = async () => {
     }
   );
   const data = await reversedGeocodingResponse.json();
+  // får ut adressen til en ref som brukes i template for å vise adresse
   addressFromCoordinates.value = data.features[0].place_name;
 };
 
-const goToGoogleMapsLink = async () => {
-  const googleMapsLink = `https://maps.google.com/?ll=${positionCoordinates.value?.latitude},${positionCoordinates.value?.longitude}`;
+const goToGoogleMapsLink = () => {
+  const googleMapsLink = `
+  https://www.google.com/maps/?q=${positionCoordinates.value?.latitude},${positionCoordinates.value?.longitude}
+  `;
   window.open(googleMapsLink, "_blank");
 };
 </script>
@@ -347,9 +342,8 @@ ion-icon {
 
 .address-text {
   text-align: center;
-  span {
-    font-weight: bold;
-  }
+  color: #3366cc;
+  text-decoration: underline;
 }
 
 .condition-platform-container > * {

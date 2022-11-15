@@ -2,24 +2,22 @@
 import {
   IonButton,
   IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
   IonContent,
   IonFab,
-  IonInput,
   IonFabButton,
   IonGrid,
   IonHeader,
-  IonSkeletonText,
-  IonCardHeader,
-  IonCardContent,
   IonPage,
   IonRefresher,
   IonRefresherContent,
-  IonTitle,
-  IonCard,
-  IonToolbar,
   IonSearchbar,
+  IonSkeletonText,
+  IonTitle,
+  IonToolbar,
   onIonViewDidEnter,
-  onIonViewWillLeave,
 } from "@ionic/vue";
 import GameCard from "@/components/GameCard.vue";
 import { authService, directus } from "@/services/directus.service";
@@ -47,12 +45,7 @@ onIonViewDidEnter(async () => {
   await gameQuery();
 });
 
-/*onIonViewWillLeave(async () => {
-  await getCurrentUserDetails();
-});*/
-
 const gameQuery = async () => {
-  // TODO får se om jeg skal sette på limit her eller ikke etter hvert
   const response = await directus.graphql.items<GamesResponse>(`
     query {
       games(search: "${userSearch.value}") {
@@ -95,7 +88,7 @@ const userSearchHandler = async () => {
     // resetter timer hver gang brukeren skriver noe i søkefelt, for å ikke trigge ønødvendig queries mot db
     clearTimeout(delayTimer);
     delayTimer = setTimeout(async () => {
-      // går det 1 sec og brukeren ikke har skrevet noe så blir søket trigget
+      // går det 1 sec og brukeren ikke har skrevet noe så blir søket trigget mot DB
       await gameQuery();
     }, 1000);
   }
@@ -108,6 +101,7 @@ const getCurrentUserDetails = async (): Promise<void> => {
 
   if (currentUserResponse.avatar) {
     currentUserAvatar.value = `${constants.DIRECTUS_INSTANCE}/assets/${currentUserResponse.avatar}?access_token=${userAccessToken}`;
+    // isLoading for å håndtere loading i UI
     isLoading.value = true;
   }
 };
@@ -120,6 +114,7 @@ const doRefresh = async (e: { target: { complete: () => void } }) => {
 
 const sendGameToModal = (id: number) => {
   handleModal.value = true;
+  // henter ID til spill for å vise rett spill på modal
   sendToModal.value = retroGames.value?.find((game) => game.id === id);
 };
 </script>
@@ -309,9 +304,4 @@ ion-fab-button::part(native) {
     background: #15e343;
   }
 }
-
-/*ion-toolbar {
-  --background: #ffffff;
-  font-family: "Saira", sans-serif;
-}*/
 </style>

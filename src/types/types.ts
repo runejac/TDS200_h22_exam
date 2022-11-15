@@ -39,4 +39,15 @@ interface NewGame {
   position: { type: string; coordinates: number[] };
 }
 
-export { Games, GameResponseDetails, GamesResponse, NewGame };
+interface PositionCoordinates {
+  longitude: number;
+  latitude: number;
+}
+
+export {
+  Games,
+  GameResponseDetails,
+  GamesResponse,
+  NewGame,
+  PositionCoordinates,
+};

@@ -5,19 +5,17 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
-  IonInput,
-  IonItem,
-  IonItemGroup,
   IonIcon,
-  IonLabel,
+  IonInput,
+  IonItemGroup,
   IonPage,
-  IonTextarea,
   IonSelect,
   IonSelectOption,
+  IonTextarea,
   IonTitle,
   IonToolbar,
-  toastController,
   onIonViewDidEnter,
+  toastController,
 } from "@ionic/vue";
 import { Camera, CameraResultType } from "@capacitor/camera";
 import { ref } from "vue";
@@ -64,6 +62,7 @@ const getCurrentPosition = async () => {
 };
 
 const chooseOrTakePicture = async () => {
+  // velger bilde fra gallery eller tar nytt bilde
   const image = await Camera.getPhoto({
     quality: 100,
     allowEditing: true,
@@ -76,6 +75,7 @@ const chooseOrTakePicture = async () => {
 };
 
 const addProperties = () => {
+  // legger til egenskaper i arrayet
   if (newPropertyText.value) {
     newGame.value.properties.push(newPropertyText.value);
     newPropertyText.value = "";
@@ -98,6 +98,7 @@ const insertGameToDb = async (e: { preventDefault: () => void }) => {
     formData.append("file", imageBlob);
     const file = await directus.files.createOne(formData);
 
+    // filtypen må være bilde for å gå videre
     if (file?.type === "image/png" || file?.type === "image/jpeg") {
       await directus.items("games").createOne({
         title: newGame.value.title,
@@ -379,7 +380,7 @@ form {
 }
 
 ion-button::part(native) {
-  /*FIXME: style 1:*/
+  // style 1
   background: #2aa146;
   border-bottom: 6px inset rgba(0, 0, 0, 0.5);
   border-left: 6px inset rgba(0, 0, 0, 0.5);
@@ -395,7 +396,7 @@ ion-button::part(native) {
     background: #15e343;
   }
 
-  /*FIXME: style 2:*/
+  // style 2
   /*  font-family: "Fira Code Medium", sans-serif;
   font-size: 1rem;
   font-weight: 700;

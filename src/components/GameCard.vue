@@ -17,8 +17,6 @@ interface PropsFromHomeToCard {
 defineProps<PropsFromHomeToCard>();
 </script>
 
-<!--<ion-card @click="() => router.push(`/detail/${game.id}`)">-->
-
 <template>
   <ion-card>
     <!--custom component-->
@@ -144,8 +142,4 @@ ion-card {
   font-size: 0.8rem;
   background: #e8e6dc;
 }
-
-/*ion-button {
-  font-family: "Fira Code", monospace;
-}*/
 </style>

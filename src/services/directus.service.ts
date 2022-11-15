@@ -5,8 +5,11 @@ import { toastController } from "@ionic/vue";
 export const directus = new Directus(constants.DIRECTUS_INSTANCE, {
   auth: {
     mode: "json",
-    // autoRefresh = false. For å stoppe refreshing av token,
-    // om ikke måtte jeg etter logg ut, klikke 2 ganger på registrer
+    // hatt noen issues med en refresh_token feil
+    // prøvd med autoRefresh = false. For å stoppe refreshing av token,
+    // men da går den ikke tilbake til login siden når det er gått 15 min
+    // jeg har tidligere måttet klikket 2 ganger på registrer, men det ser ut til å OK nå
+    // har litt forklaring her som pointer til noen issues andre har hatt relatert til samme problem
     // https://github.com/runejac/TDS200_h22_exam/issues/5
     autoRefresh: true,
   },
@@ -33,11 +36,6 @@ export const authService = {
     password: string,
     avatar?: string
   ): Promise<boolean | null> {
-    //localStorage.removeItem("auth_expires_at");
-    // error handler for inputs on the back
-
-    // FIXME:
-
     if (firstName.length > 0 && email.includes("@") && password.length > 0) {
       const createUserResult = await directus.users.createOne({
         first_name: firstName,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { constants } from "@/constants/constants";
-import { IonImg, IonText } from "@ionic/vue";
+import { IonImg } from "@ionic/vue";
 
 interface PropsFromCardToImage {
   imageId: string;

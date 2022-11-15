@@ -9,9 +9,6 @@ import { authService } from "@/services/directus.service";
 import { toastController } from "@ionic/vue";
 
 const authenticationRequiredRouteGuard = async () => {
-  // function that times out user and deletes auth_token after 15min
-  // also Route Guarding the auth-page, if not logged in
-  // /authentication will force
   const userAccessToken = localStorage.getItem("auth_token");
   if (!userAccessToken) return { name: "Authentication" };
   const userAccessTokenExpiresAt = localStorage.getItem(

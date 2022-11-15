@@ -11,7 +11,6 @@ import {
   IonHeader,
   IonIcon,
   IonPage,
-  IonCardContent,
   IonRefresher,
   IonRefresherContent,
   IonText,
@@ -95,6 +94,7 @@ const gameDelete = async (gameId: number) => {
 };
 
 const logOut = async (messageToGuest?: string) => {
+  // avhengig av om bruker er en gjestebruker eller registrert bruker så vil vi gi ulik beskjed
   await authService.logout();
 
   const loggedOutToast = await toastController.create({

@@ -1,22 +1,19 @@
 <script setup lang="ts">
 import {
-  IonInput,
+  IonButton,
+  IonCol,
   IonContent,
   IonGrid,
-  IonRow,
-  IonCol,
+  IonIcon,
+  IonInput,
   IonItem,
-  IonButton,
+  IonItemGroup,
   IonLabel,
   IonModal,
-  IonToolbar,
-  IonHeader,
-  IonIcon,
-  IonTitle,
-  IonItemGroup,
-  IonButtons,
-  modalController,
   IonPage,
+  IonRow,
+  IonTitle,
+  modalController,
   toastController,
 } from "@ionic/vue";
 
@@ -29,7 +26,6 @@ import { Camera, CameraResultType } from "@capacitor/camera";
 
 const router = useRouter();
 const loginIsLoading = ref(false);
-const isPostingToRegister = ref(false);
 const newAvatar = ref();
 const avatarFileId = ref();
 const firstName = ref("");
@@ -53,6 +49,7 @@ const login = async (e: { preventDefault: () => void }) => {
         loginIsLoading.value = false;
       }
     } catch (e) {
+      // hvis access_token er null throw error og vis toast i authService.login
       loginIsLoading.value = false;
       console.error(e);
     }
@@ -62,6 +59,7 @@ const login = async (e: { preventDefault: () => void }) => {
 const loginAsGuestUser = async (e: { preventDefault: () => void }) => {
   e.preventDefault();
 
+  // gjestebruker logges inn med fast brukernavn og passord, som KUN har read permissions på games
   try {
     await authService.login(
       constants.GUEST_USER_EMAIL,
@@ -86,8 +84,6 @@ const clearLoginInputsAfterRegisterIsClicked = () => {
   email.value = "";
   password.value = "";
   firstName.value = "";
-  // ref line 8-10 @ directus.service.ts
-  // localStorage.removeItem("auth_expires_at");
 };
 
 const cancel = () => {
@@ -323,9 +319,10 @@ ion-page {
   -webkit-backdrop-filter: blur(5px);
 }
 
-ion-content.background {
+ion-content::part(background) {
   --background: url("../../public/assets/img/retro-background.jpg") no-repeat
-    center center/cover fixed;
+    center top / cover;
+  background-size: 130vw;
 }
 
 ion-input.custom {
