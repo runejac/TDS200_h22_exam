@@ -51,19 +51,28 @@ const getCurrentPosition = async () => {
   // bruker posisjonen til bruker som er logget inn
   const checkPermission = await Geolocation.checkPermissions();
 
-  console.log(checkPermission);
-
-  const requestPermission = await Geolocation.requestPermissions();
-
-  console.log(requestPermission);
-
-  const coordinates = await Geolocation.getCurrentPosition({
-    enableHighAccuracy: true,
-  });
-  newGame.value.position.coordinates = [
-    coordinates.coords.longitude,
-    coordinates.coords.latitude,
-  ];
+  if (!checkPermission) {
+    const permission = await Geolocation.requestPermissions();
+    if (permission) {
+      try {
+        const coordinates = await Geolocation.getCurrentPosition({
+          enableHighAccuracy: true,
+        });
+        newGame.value.position.coordinates = [
+          coordinates.coords.longitude,
+          coordinates.coords.latitude,
+        ];
+      } catch (e) {
+        const errorToast = await toastController.create({
+          message: "Kunne ikke hente posisjon, vennligst skru på GPS.",
+          duration: 4000,
+          color: "warning",
+        });
+        await errorToast.present();
+        console.log(e);
+      }
+    }
+  }
 
   console.log("longitude", newGame.value.position.coordinates[0]);
   console.log("latitude", newGame.value.position.coordinates[1]);
