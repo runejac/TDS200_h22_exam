@@ -36,19 +36,31 @@ export const authService = {
     password: string,
     avatar?: string
   ): Promise<boolean | null> {
-    if (firstName.length > 0 && email.includes("@") && password.length > 0) {
-      const createUserResult = await directus.users.createOne({
-        first_name: firstName,
-        email,
-        password,
-        role: constants.USER_ROLE,
-        avatar,
-      });
+    try {
+      if (firstName.length > 0 && email.includes("@") && password.length > 0) {
+        const createUserResult = await directus.users.createOne({
+          first_name: firstName,
+          email,
+          password,
+          role: constants.USER_ROLE,
+          avatar,
+        });
 
-      return !!createUserResult?.email;
-    } else {
+        return !!createUserResult?.email;
+      } else {
+        // feilhåndtering dersom ikke alle feltene er fylt ut eller om det mangler @ i e-post
+        const errorToast = await toastController.create({
+          message: "Feil ved registrering, sjekk alle felt og husk @ i e-post.",
+          duration: 5000,
+          color: "danger",
+        });
+        await errorToast.present();
+        return null;
+      }
+    } catch (e) {
+      // trigges dersom e-posten allerede er registrert hos Directus
       const errorToast = await toastController.create({
-        message: "Feil i registrering, sjekk alle felt og husk @ i e-post.",
+        message: "Feil ved registrering, e-post er allerede i bruk.",
         duration: 5000,
         color: "danger",
       });

@@ -55,7 +55,7 @@ const getCurrentPosition = async () => {
 
   const requestPermission = await Geolocation.requestPermissions();
 
-  console.log(requestPermission.location);
+  console.log(requestPermission);
 
   const coordinates = await Geolocation.getCurrentPosition({
     enableHighAccuracy: true,
