@@ -180,7 +180,7 @@ const removeImageChosen = () => {
             class="will-be-added-image-container"
             @click="chooseOrTakePicture"
           >
-            <div class="add-image">Last opp bilde</div>
+            <div class="add-image">Velg bilde</div>
           </div>
         </section>
 
@@ -374,49 +374,23 @@ form {
 }
 
 .btn-add-properties {
-  align-self: center;
   margin-left: 15px;
-  font-size: 1.3rem;
+  font-family: "Fira Code", monospace;
+  font-size: 1.2rem;
 }
 
 ion-button::part(native) {
-  // style 1
   background: #2aa146;
   border-bottom: 6px inset rgba(0, 0, 0, 0.5);
   border-left: 6px inset rgba(0, 0, 0, 0.5);
   border-right: 6px inset rgba(255, 255, 255, 0.5);
   border-top: 6px inset rgba(255, 255, 255, 0.5);
   color: #e8e6dc;
-  cursor: pointer;
-  border-radius: 10px;
-  font-size: 1.2rem;
   text-transform: uppercase;
 
   &:focus:active {
     background: #15e343;
   }
-
-  // style 2
-  /*  font-family: "Fira Code Medium", sans-serif;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #ffffff;
-  background-color: #2aa146;
-  border-radius: 0;
-  padding: 10px 20px;
-  margin: 0;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
-
-  &:hover {
-    background-color: #2aa146;
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
-  }
-
-  &:active {
-    background-color: #2aa146;
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
-  }*/
 }
 
 .input-container {
@@ -464,7 +438,9 @@ ion-button::part(native) {
 
 .btn-add {
   display: flex;
-  font-size: 1rem;
+  height: 45px;
+  font-family: VT323, monospace;
+  font-size: 1.5rem;
 }
 
 .add-image {

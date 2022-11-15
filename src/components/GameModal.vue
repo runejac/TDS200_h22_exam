@@ -88,7 +88,7 @@ const handleRouterAndModal = () => {
           class="btn-details"
           color="light"
           @click="handleRouterAndModal"
-          >Kjøp / detaljer</ion-button
+          >Se detaljer</ion-button
         >
       </div>
     </ion-content>
@@ -191,16 +191,20 @@ ion-content {
   background: #2aa146;*/
 
   // style 2
+  height: 40px;
+  font-family: VT323, monospace;
   background: #2aa146;
   border-bottom: 6px inset rgba(0, 0, 0, 0.5);
   border-left: 6px inset rgba(0, 0, 0, 0.5);
   border-right: 6px inset rgba(255, 255, 255, 0.5);
   border-top: 6px inset rgba(255, 255, 255, 0.5);
   color: #e8e6dc;
-  cursor: pointer;
-  border-radius: 10px;
-  font-size: 1.2rem;
+  border-radius: 0;
+  display: inline-block;
+  font-size: 1.5rem;
+  padding: 1rem;
   text-transform: uppercase;
+  width: auto;
 
   &:focus:active {
     background: #15e343;

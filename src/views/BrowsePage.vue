@@ -294,8 +294,6 @@ ion-fab-button::part(native) {
   border-top: 6px inset rgba(255, 255, 255, 0.5);
   box-sizing: border-box;
   color: #e8e6dc;
-  cursor: pointer;
-  border-radius: 10px;
   display: inline-block;
   font-size: 2rem;
   text-transform: uppercase;

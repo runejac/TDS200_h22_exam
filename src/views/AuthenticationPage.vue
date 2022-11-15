@@ -326,7 +326,7 @@ ion-content.background {
 
 ion-content::part(background) {
   // for at bakgrunnsbilde ikke skal flytte på seg når keyboard trigges
-  background-size: 130vw;
+  background-size: 150vw;
 }
 
 ion-input.custom {
@@ -389,7 +389,6 @@ ion-button::part(native) {
   border-top: 6px inset rgba(255, 255, 255, 0.5);
   box-sizing: border-box;
   color: white;
-  cursor: pointer;
   border-radius: 0;
   display: inline-block;
   font-size: 2rem;
