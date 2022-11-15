@@ -31,6 +31,7 @@ import { constants } from "@/constants/constants";
 const route = useRoute();
 const { id } = route.params;
 const isModalOpen = ref(false);
+const googleMapsLink = ref();
 const currentUserId = ref();
 const positionCoordinates = ref<PositionCoordinates>();
 const newComment = ref("");
@@ -180,10 +181,9 @@ const fetchAddress = async () => {
 };
 
 const goToGoogleMapsLink = () => {
-  const googleMapsLink = `
+  googleMapsLink.value = `
   https://www.google.com/maps/?q=${positionCoordinates.value?.latitude},${positionCoordinates.value?.longitude}
   `;
-  window.open(googleMapsLink, "_blank");
 };
 </script>
 
@@ -244,9 +244,9 @@ const goToGoogleMapsLink = () => {
       </section>
       <section class="map-container">
         <div @click="goToGoogleMapsLink" class="address-text">
-          <p>
-            {{ addressFromCoordinates }}
-          </p>
+          <a href="{{googleMapsLink}}" target="_blank">
+            {{ addressFromCoordinates }}</a
+          >
         </div>
         <MapboxMap
           contries="no"
@@ -342,8 +342,7 @@ ion-icon {
 
 .address-text {
   text-align: center;
-  color: #3366cc;
-  text-decoration: underline;
+  padding-block: 15px;
 }
 
 .condition-platform-container > * {
