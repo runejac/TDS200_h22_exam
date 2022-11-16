@@ -15,8 +15,6 @@ import {
   IonTitle,
   IonToolbar,
   onIonViewDidEnter,
-  onIonViewDidLeave,
-  onIonViewWillLeave,
   toastController,
 } from "@ionic/vue";
 import { Camera, CameraResultType } from "@capacitor/camera";
