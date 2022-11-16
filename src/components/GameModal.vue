@@ -36,7 +36,7 @@ const handleRouterAndModal = () => {
 <template>
   <ion-modal class="custom" ref="modal" :is-open="handleModal">
     <ion-content no-bounce :has-bouncing="false" :force-overscroll="false">
-      <ion-toolbar color="translucent">
+      <ion-toolbar color="translucent" mode="md">
         <ion-title>{{ game.title }}</ion-title>
         <ion-buttons class="btn-close-container" slot="end">
           <ion-button @click="dismiss()">
@@ -232,6 +232,10 @@ ion-toolbar {
   overflow: hidden;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
+}
+
+.ios .description {
+  -webkit-line-clamp: 3;
 }
 
 .ul-properties-container-detail {

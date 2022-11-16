@@ -122,7 +122,7 @@ const sendGameToModal = (id: number) => {
 <template>
   <ion-page>
     <ion-header :translucent="true">
-      <ion-toolbar>
+      <ion-toolbar mode="md">
         <ion-title slot="start">Retro Game Market</ion-title>
         <ion-buttons slot="end">
           <ion-button @click="() => router.push('/user')">
@@ -204,6 +204,12 @@ ion-searchbar.custom {
   top: 0;
   font-weight: 700;
   color: #252525;
+  --placeholder-color: #252525;
+}
+
+.ios ion-searchbar.custom {
+  --background: #fff;
+  --color: #252525;
   --placeholder-color: #252525;
 }
 
