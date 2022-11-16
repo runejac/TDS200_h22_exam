@@ -15,6 +15,8 @@ import {
   IonTitle,
   IonToolbar,
   onIonViewDidEnter,
+  onIonViewDidLeave,
+  onIonViewWillLeave,
   toastController,
 } from "@ionic/vue";
 import { Camera, CameraResultType } from "@capacitor/camera";
@@ -49,29 +51,55 @@ const newGame = ref<NewGame>({
 
 const getCurrentPosition = async () => {
   // bruker posisjonen til bruker som er logget inn
-  const checkPermission = await Geolocation.checkPermissions();
 
-  if (!checkPermission) {
-    const permission = await Geolocation.requestPermissions();
-    if (permission) {
-      try {
-        const coordinates = await Geolocation.getCurrentPosition({
-          enableHighAccuracy: true,
-        });
-        newGame.value.position.coordinates = [
-          coordinates.coords.longitude,
-          coordinates.coords.latitude,
-        ];
-      } catch (e) {
-        const errorToast = await toastController.create({
-          message: "Kunne ikke hente posisjon, vennligst skru på GPS.",
-          duration: 4000,
-          color: "warning",
-        });
-        await errorToast.present();
-        console.log(e);
+  try {
+    await Geolocation.checkPermissions();
+    await Geolocation.requestPermissions();
+    const coordinates = await Geolocation.getCurrentPosition({
+      enableHighAccuracy: true,
+    });
+    newGame.value.position.coordinates = [
+      coordinates.coords.longitude,
+      coordinates.coords.latitude,
+    ];
+
+    const infoGpsToast = await toastController.create({
+      message:
+        "Bruker nå din lokasjon for å gi potensielle kjøpere informasjon om hvor du selger fra.",
+      duration: 5000,
+      color: "success",
+    });
+
+    await infoGpsToast.present();
+  } catch (e) {
+    let timeleft = ref(5);
+    // klar over at any er fyfy her
+    let toast: any;
+
+    const errorToast = async () => {
+      toast = await toastController.create({
+        message: `Kunne ikke hente posisjon, skru på GPS for at kjøpere kan se hvor du befinner deg. Går tilbake om ${timeleft.value}.`,
+        duration: 5000,
+        color: "danger",
+        position: "bottom",
+        header: "GPS feil",
+      });
+      await toast.present();
+    };
+
+    let toastTimer = setInterval(function () {
+      if (timeleft.value <= 0) {
+        clearInterval(toastTimer);
+        // sender brukeren tilbake til /browse etter 5 sek dersom bruker ikke har på GPS på telefonen
+        window.location.href = "/browse";
       }
-    }
+      errorToast();
+      timeleft.value -= 1;
+      // blinker toast 5 ganger, fant ikke ut hvordan den dynamisk kunne rendre countdown på 1 stk toastController
+      toast.dismiss();
+    }, 1000);
+
+    console.log(e);
   }
 
   console.log("longitude", newGame.value.position.coordinates[0]);
@@ -101,6 +129,9 @@ const addProperties = () => {
 
 const insertGameToDb = async (e: { preventDefault: () => void }) => {
   e.preventDefault();
+
+  // invokes på nytt i dersom bruker går inn på pagen uten at GPS er på, men nå har skrudd det på etter toastmelding
+  await getCurrentPosition();
 
   if (!newGame.value.image) {
     alert("Du må velge et bilde");
