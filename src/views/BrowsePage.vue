@@ -48,7 +48,7 @@ onIonViewDidEnter(async () => {
 const gameQuery = async () => {
   const response = await directus.graphql.items<GamesResponse>(`
     query {
-      games(search: "${userSearch.value}") {
+      games(sort: "-date_created", search: "${userSearch.value}") {
         id
         title
         description
