@@ -6,11 +6,14 @@ export const directus = new Directus(constants.DIRECTUS_INSTANCE, {
   auth: {
     mode: "json",
     // hatt noen issues med en refresh_token feil
-    // prøvd med autoRefresh = false. For å stoppe refreshing av token,
-    // men da går den ikke tilbake til login siden når det er gått 15 min
-    // jeg har tidligere måttet klikket 2 ganger på registrer, men det ser ut til å OK nå
+    // prøver jeg med autoRefresh = false. For å stoppe refreshing av token, ved registrering, trenger jeg ikke klikke 2 ganger på register
+    // da har jeg ikke problemet at jeg får feilmelding: "Error: "refresh_token" is required in either the JSON payload or Cookie"
+    // men da går den ikke tilbake til login-siden automatisk når det er gått 15 min med guarden
     // har litt forklaring her som pointer til noen issues andre har hatt relatert til samme problem
     // https://github.com/runejac/TDS200_h22_exam/issues/5
+    // så nå fra er den true og det må klikkes 2 ganger på register
+    // skal også nevnes at dette skjer KUN dersom det velges å sende med avatar i registreringen
+    // permission til public user skal være ok med read og write på tabellen "directus_files".
     autoRefresh: true,
   },
 });

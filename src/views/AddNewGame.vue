@@ -51,8 +51,6 @@ const getCurrentPosition = async () => {
   // bruker posisjonen til bruker som er logget inn
 
   try {
-    await Geolocation.checkPermissions();
-    await Geolocation.requestPermissions();
     const coordinates = await Geolocation.getCurrentPosition({
       enableHighAccuracy: true,
     });
@@ -71,7 +69,7 @@ const getCurrentPosition = async () => {
     await infoGpsToast.present();
   } catch (e) {
     let timeleft = ref(5);
-    // klar over at any er fyfy her
+    // klar over at any er fyfy her, hadde forhørt meg med en kollega om jeg hadde vært i en jobbsituasjon her!
     let toast: any;
 
     const errorToast = async () => {
@@ -129,7 +127,8 @@ const insertGameToDb = async (e: { preventDefault: () => void }) => {
   e.preventDefault();
 
   // invokes på nytt i dersom bruker går inn på pagen uten at GPS er på, men nå har skrudd det på etter toastmelding
-  await getCurrentPosition();
+  // await getCurrentPosition();
+  // strøket dette da jeg har satt på timer som kaster bruker tilbake til /browse om gps er av
 
   if (!newGame.value.image) {
     alert("Du må velge et bilde");

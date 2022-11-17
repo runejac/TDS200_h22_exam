@@ -3,22 +3,13 @@
 Retro Game Market 🕹️🎮🎰
 </h1>
 
----
-
-### Ved sensur vektlegges blant annet følgende punkter:
-- [ ] fungerer på nettleser og i emulator
-- [ ] TS, sjekk om det skal lages mer interface og definisjon av typer, return typer osv.
-- [ ] v-if, v-for, v-bind, v-slot, v-show, v-cloak, v-pre, v-once
-- [ ] kommenter kode, vise sensor at jeg forstår hva koden gjør på visse steder som er kompliserte
-
-
 ### Oppretting og levering av eksamensprosjekt:
 - [x] ionic start TDS200_h22_ditt-kandidatnummer blank --type vue
-- [ ] data tilgjengelig i Directus ved levering
-- [ ] lag kort video på MAX 1.5min som viser hvordan appen fungerer (skjermopptak UTEN lyd). Vis frem ekstra funksjonalitet spesielt potensielt
-- [ ] lag en fil "Oppgave2-readme.txt", skriv inn hvilke funksjonalitet som er implementert og hvilken emulator jeg har brukt
-- [ ] lever UTEN node_modules
-- [ ] sørg for at package.json inneholder eksterne npm-pakker jeg velger å ha med
+- [x] data tilgjengelig i Directus ved levering
+- [x] lag kort video på MAX 1.5min som viser hvordan appen fungerer (skjermopptak UTEN lyd). Vis frem ekstra funksjonalitet spesielt potensielt
+- [x] lag en fil "Oppgave2-readme.txt", skriv inn hvilke funksjonalitet som er implementert og hvilken emulator jeg har brukt
+- [x] lever UTEN node_modules
+- [x] sørg for at package.json inneholder eksterne npm-pakker jeg velger å ha med
 
 ### Minstekrav til implementasjon:
 - [x] Et brukersystem må være på plass, med andre ord må brukerne av appen ha mulighet til å registrere seg, logge inn og logge ut.
@@ -40,7 +31,7 @@ Retro Game Market 🕹️🎮🎰
 - [x] Egen profilside for innlogget bruker.
 - [x] Bruk av npm-moduler (npm install [pakkenavn] –-save) (rimraf, prettier, sass, sass-loader, ionicons, studiometa/vue-mapbox-gl).
 - [x] Bruk av relevante eksterne API-er (REST/GraphQL).
-- [ ] Implementasjon av accessibility-prinsipper.
+- [x] Implementasjon av accessibility-prinsipper.
 
 
 

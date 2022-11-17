@@ -84,6 +84,7 @@ const clearLoginInputsAfterRegisterIsClicked = () => {
   email.value = "";
   password.value = "";
   firstName.value = "";
+  newAvatar.value = "";
 };
 
 const cancel = () => {
@@ -108,8 +109,8 @@ const postAvatarToDb = async () => {
     const fileBlob = await response.blob();
     const formData = new FormData();
     formData.append("file", fileBlob);
-    const file = await directus.files.createOne(formData);
 
+    const file = await directus.files.createOne(formData);
     avatarFileId.value = file?.id;
   }
 };
@@ -120,9 +121,12 @@ const removeImageChosen = () => {
 
 const register = async (e: { preventDefault: () => void }) => {
   e.preventDefault();
-  await postAvatarToDb();
 
   try {
+    // må klikkes 2 ganger på register når man tar med avatar, får en "refresh_token" feil, mer om det på linje
+    // 8-13 i directus.service.ts
+    await postAvatarToDb();
+    loginIsLoading.value = true;
     const response = await authService.register(
       firstName.value,
       email.value,
@@ -131,8 +135,8 @@ const register = async (e: { preventDefault: () => void }) => {
     );
 
     if ((await response) !== null) {
+      loginIsLoading.value = false;
       await login(e);
-      await router.push("/browse");
       await modalController.dismiss();
       email.value = "";
       password.value = "";
@@ -140,6 +144,7 @@ const register = async (e: { preventDefault: () => void }) => {
       newAvatar.value = "";
     }
   } catch (e) {
+    loginIsLoading.value = false;
     console.error(e);
   }
 };
@@ -221,7 +226,9 @@ const register = async (e: { preventDefault: () => void }) => {
                     <ion-button class="btn-cancel" @click="cancel"
                       >Avbryt</ion-button
                     >
-                    <ion-button @click="register">Bekreft</ion-button>
+                    <ion-button :disabled="loginIsLoading" @click="register"
+                      >Bekreft</ion-button
+                    >
                   </div>
                 </ion-content>
               </ion-modal>

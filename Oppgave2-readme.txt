@@ -1,6 +1,15 @@
-Emulator: Android
+Emulator: Android, Pixel 5 API 31
 
 Bakgrunnsbilde brukt på login er fra Unsplash.com: https://unsplash.com/photos/ezEn4jYrVYQ
+MULIG at man må klikke på register 2 ganger, dette er om du velger avatar. Mer info om dette står kommentert i directus.service.ts
+
+Hvis du vil logge på en bruker som allerede har noen spill:
+mail: rt@rt.com
+passord: 1
+
+Eller
+mail: r@r.com
+passord: 1
 
 Funksjonalitet:
 - Besøk app med gjestebruker som KUN har lese rettigheter på Games tabellen ved å klikke på "Gjestebruker" på /authentication
@@ -36,6 +45,6 @@ Funksjonalitet:
 - [x] Egen profilside for innlogget bruker.
 - [x] Bruk av npm-moduler (npm install [pakkenavn] –-save) (rimraf, prettier, sass, sass-loader, ionicons, studiometa/vue-mapbox-gl).
 - [x] Bruk av relevante eksterne API-er (REST/GraphQL).
-- [ ] Implementasjon av accessibility-prinsipper.
+- [x] Implementasjon av accessibility-prinsipper. (Egen kommentar: ikke noe særlig bruk av aria label osv, men har alt tekster på bilder.)
 
 
