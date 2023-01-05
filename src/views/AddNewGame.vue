@@ -95,6 +95,7 @@ const getCurrentPosition = async () => {
       toast.dismiss();
     }, 1000);
 
+
     console.log(e);
   }
 

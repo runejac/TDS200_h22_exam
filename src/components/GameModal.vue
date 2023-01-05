@@ -29,7 +29,7 @@ const props = defineProps<PropsFromBrowseToModal>();
 
 const handleRouterAndModal = () => {
   router.push(`/detail/${props.game.id}`);
-  modalController.dismiss();
+  modalController.dismiss()
 };
 </script>
 
