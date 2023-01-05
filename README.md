@@ -13,13 +13,13 @@ This application was made by me and were graded to an A.
   <div>
     <h3>1. Log in or register</h3>
     <div style="display: flex; flex-direction: row; justify-content: center">
-      <img style="width: 30%; border-radius: 30px; border-collapse: separate; " alt="authentication start" src="/public/assets/readme-images/auth.png"/>
+      <img style="width: 30%;" alt="authentication start" src="/public/assets/readme-images/auth.png"/>
     </div>
   </div>
   <div>
 		<h3>2. List of games in grid layout</h3>
     <div style="display: flex; flex-direction: row; justify-content: center">
-      <img style="width: 30%" alt="games listing" src="/public/assets/readme-images/gridlayout.png"/>
+      <img style="width: 30%" alt="games listing" src="/public/assets/readme-images/games-list.png"/>
     </div>
   </div>
   <div>
