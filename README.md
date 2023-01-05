@@ -13,13 +13,13 @@ This application was made by me and were graded to an A.
   <div>
     <h3>1. Log in or register</h3>
     <div style="display: flex; flex-direction: row; justify-content: center">
-      <img style="width: 30%" alt="authentication start" src="/public/assets/readme-images/auth.png"/>
+      <img style="width: 30%; border-radius: 30px;" alt="authentication start" src="/public/assets/readme-images/auth.png"/>
     </div>
   </div>
   <div>
 		<h3>2. List of games in grid layout</h3>
     <div style="display: flex; flex-direction: row; justify-content: center">
-      <img style="width: 25%" alt="games listing" src="/public/assets/readme-images/gridlayout.png"/>
+      <img style="width: 30%" alt="games listing" src="/public/assets/readme-images/gridlayout.png"/>
     </div>
   </div>
   <div>
@@ -31,8 +31,8 @@ This application was made by me and were graded to an A.
   <div>
     <h3>3. Details and map</h3>
     <div style="display: flex; flex-direction: row; justify-content: center">
-      <img style="width: 30%" alt="intro modal1" src="/public/assets/readme-images/detail1.png"/>
-      <img style="width: 30%" alt="intro modal1" src="/public/assets/readme-images/detail2.png"/>
+      <img style="width: 25%" alt="intro modal1" src="/public/assets/readme-images/detail1.png"/>
+      <img style="width: 25%" alt="intro modal1" src="/public/assets/readme-images/detail2.png"/>
 		</div>
 	</div>
 	<div>
